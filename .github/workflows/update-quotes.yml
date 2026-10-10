@@ -1,28 +1,14 @@
-name: Mise à jour des cotations BRVM
-
-on:
-schedule:
-- cron: “15 12 * * 1-5”
-workflow_dispatch:
-
-permissions:
-contents: write
-
-jobs:
-update-quotes:
-runs-on: ubuntu-latest
-steps:
-- name: Récupérer le dépôt
-uses: actions/checkout@v4
-
   - name: Installer Python
     uses: actions/setup-python@v5
     with:
       python-version: "3.12"
+
   - name: Installer les dépendances
     run: pip install requests beautifulsoup4
+
   - name: Mettre à jour les cotations
     run: python scripts/update_quotes.py
+
   - name: Enregistrer les nouvelles cotations
     run: |
       if [ -f quotes.json ]; then
