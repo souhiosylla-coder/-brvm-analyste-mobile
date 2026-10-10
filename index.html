@@ -15,6 +15,73 @@ const companies=[
 const get=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));let quotes=get('brvm_quotes',{}), holdings=get('brvm_holdings',[]);
 const fmt=n=>Number(n).toLocaleString('fr-FR',{maximumFractionDigits:2});const num=id=>parseFloat(document.getElementById(id).value)||0;
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
+async function loadRemoteQuotes() {
+  try {
+    const response = await fetch(
+      'quotes.json?t=' + Date.now(),
+      { cache: 'no-store' }
+    );
+
+    if (!response.ok) {
+      throw new Error('Impossible de charger les cotations');
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.quotes)) {
+      throw new Error('Format des cotations incorrect');
+    }
+
+    const remoteQuotes = {};
+
+    data.quotes.forEach(q => {
+      if (q.symbol && Number(q.price) > 0) {
+        remoteQuotes[q.symbol] = {
+          price: Number(q.price),
+          date: data.retrieved_on || '',
+          variation_pct: Number(q.variation_pct) || 0
+        };
+      }
+    });
+
+    quotes = {
+      ...quotes,
+      ...remoteQuotes
+    };
+
+    set('brvm_quotes', quotes);
+
+    holdings = holdings.map(h =>
+      remoteQuotes[h.symbol]
+        ? { ...h, current: remoteQuotes[h.symbol].price }
+        : h
+    );
+
+    set('brvm_holdings', holdings);
+
+    renderCompanies();
+    renderPortfolio();
+
+    document.getElementById('lastUpdate').textContent =
+      data.updated_at_utc
+        ? new Date(data.updated_at_utc)
+            .toLocaleString('fr-FR', {
+              timeZone: 'Africa/Abidjan'
+            })
+        : 'Données chargées';
+
+    console.log(
+      remoteQuotes.length,
+      'cotations récupérées'
+    );
+
+  } catch (error) {
+    console.error(
+      'Erreur de chargement des cotations :',
+      error
+    );
+  }
+}
 function renderCompanies(){let sectors=[...new Set(companies.map(c=>c[2]))].sort();let sf=document.getElementById('sectorFilter');if(sf.options.length===1)sectors.forEach(s=>sf.add(new Option(s,s)));let q=(document.getElementById('companySearch').value||'').toLowerCase(),sec=sf.value;let list=companies.filter(c=>(!sec||c[2]===sec)&&c.join(' ').toLowerCase().includes(q));document.getElementById('companyList').innerHTML=list.map(c=>`<div class="company"><div><b>${c[0]}</b> — ${c[1]}</div><div class="muted">${c[2]} · Cours importé : ${quotes[c[0]]?fmt(quotes[c[0]].price)+' FCFA ('+quotes[c[0]].date+')':'non renseigné'}</div><div class="actions"><button class="secondary" onclick="analyzeSymbol('${c[0]}')">Analyser</button></div></div>`).join('')||'<p class="muted">Aucun résultat.</p>';document.getElementById('companyCount').textContent=companies.length;document.getElementById('quoteCount').textContent=Object.keys(quotes).length;}
 document.getElementById('companySearch').addEventListener('input',renderCompanies);document.getElementById('sectorFilter').addEventListener('change',renderCompanies);
 function analyzeSymbol(s){['fSymbol','tSymbol','pSymbol'].forEach(id=>document.getElementById(id).value=s);if(quotes[s]){document.getElementById('fPrice').value=quotes[s].price;document.getElementById('pCurrent').value=quotes[s].price;}document.querySelector('[data-tab="fundamental"]').click();}
@@ -27,5 +94,7 @@ function importCSV(){let f=document.getElementById('csvFile').files[0];if(!f){sh
 function showImport(m){let e=document.getElementById('importMessage');e.textContent=m;e.classList.remove('hidden');}function clearQuotes(){if(confirm('Effacer tous les cours importés ?')){quotes={};set('brvm_quotes',quotes);renderCompanies();renderPortfolio();document.getElementById('lastUpdate').textContent='Aucune';showImport('Cours importés effacés.');}}
 function downloadTemplate(){let blob=new Blob(['symbole,cours,date\nSNTS,39005,2026-10-09\nORAC,21295,2026-10-09\n'],{type:'text/csv;charset=utf-8;'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='modele_cotations_brvm.csv';a.click();URL.revokeObjectURL(a.href);}
 function exportPortfolio(){let rows=[['symbole','quantite','prix_moyen','dernier_cours'] ,...holdings.map(h=>[h.symbol,h.qty,h.cost,h.current||quotes[h.symbol]?.price||''])];let csv=rows.map(r=>r.join(',')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='mon_portefeuille_brvm.csv';a.click();URL.revokeObjectURL(a.href);}
-renderCompanies();renderPortfolio();if(Object.keys(quotes).length)document.getElementById('lastUpdate').textContent='Données importées';
+renderCompanies();
+renderPortfolio();
+loadRemoteQuotes();
 </script></body></html>
