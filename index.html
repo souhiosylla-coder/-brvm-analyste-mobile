@@ -82,12 +82,11 @@ th{background:#f3f6fa;color:var(--navy)}
     <button data-tab="data">Données & import</button>
   </div>
 
-  <!-- DASHBOARD -->
   <section id="dashboard" class="screen active">
     <div class="card">
       <h2>Bienvenue dans ton analyste BRVM</h2>
       <p>Outil mobile complet pour analyser les sociétés cotées à la BRVM : ratios fondamentaux, indicateurs techniques, graphiques, scoring et suivi de portefeuille.</p>
-      <div class="notice"><b>Important :</b> les données financières pré-remplies sont <b>illustratives</b> (à titre pédagogique). Vérifie toujours les rapports officiels des sociétés et les cours BRVM.</div>
+      <div class="notice"><b>Important :</b> le cours est chargé automatiquement depuis les cotations BRVM. Pour l’analyse fondamentale, saisis les données des <b>rapports officiels</b> des sociétés (bénéfice, dividendes, etc.).</div>
       <div class="actions">
         <a class="btn" href="https://www.brvm.org/fr/flux-differe" target="_blank" rel="noopener">Cours BRVM différés</a>
         <a class="btn secondary" href="https://bfin.brvm.org/Activites_marche.aspx" target="_blank" rel="noopener">Activité du marché</a>
@@ -111,11 +110,10 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </section>
 
-  <!-- COMPANIES -->
   <section id="companies" class="screen">
     <div class="card">
       <h2>Répertoire des sociétés et symboles</h2>
-      <p class="muted">Répertoire indicatif. Clique sur <b>Analyser</b> pour pré-remplir les analyses.</p>
+      <p class="muted">Répertoire indicatif. Clique sur <b>Analyser</b> : le cours est chargé automatiquement, puis saisis les données financières pour obtenir tous les ratios.</p>
       <input id="companySearch" placeholder="Rechercher un nom ou un symbole…">
       <label>Filtrer par secteur</label>
       <select id="sectorFilter"><option value="">Tous les secteurs</option></select>
@@ -127,22 +125,10 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </section>
 
-  <!-- FUNDAMENTAL -->
   <section id="fundamental" class="screen">
     <div class="card">
       <h2>Analyse fondamentale</h2>
-      <p class="muted">Saisis les données des derniers états financiers ou charge un exemple pré-rempli.</p>
-      
-      <label>Charger un exemple (données illustratives)</label>
-      <select id="fSample" onchange="loadSampleFundamental()">
-        <option value="">— Choisir une société —</option>
-        <option value="SNTS">SNTS — Sonatel</option>
-        <option value="ORAC">ORAC — Orange CI</option>
-        <option value="SGBC">SGBC — Société Générale CI</option>
-        <option value="NTLC">NTLC — Nestlé CI</option>
-        <option value="BOAC">BOAC — Bank of Africa CI</option>
-        <option value="SLBC">SLBC — Solibra</option>
-      </select>
+      <p class="muted">Le <b>cours</b> se charge automatiquement depuis les cotations BRVM. Saisis ensuite les données des derniers états financiers publiés pour calculer automatiquement tous les ratios et le score.</p>
 
       <div class="row" style="margin-top:10px">
         <div><label>Symbole</label><input id="fSymbol" placeholder="Ex. SNTS"></div>
@@ -170,7 +156,6 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </section>
 
-  <!-- TECHNICAL -->
   <section id="technical" class="screen">
     <div class="card">
       <h2>Analyse technique</h2>
@@ -178,11 +163,10 @@ th{background:#f3f6fa;color:var(--navy)}
       <input id="tSymbol" placeholder="Ex. BOAC">
       <label>Historique des cours de clôture (du plus ancien au plus récent)</label>
       <textarea id="tPrices" placeholder="10000, 10100, 9950, 10300, 10450, 10600…"></textarea>
-      <p class="muted">Idéalement ≥ 50 clôtures. Tu peux coller des valeurs séparées par virgules, espaces ou retours à la ligne.</p>
+      <p class="muted">Idéalement ≥ 50 clôtures. Colle les cours séparés par virgules, espaces ou retours à la ligne. Tous les indicateurs (RSI, MACD, Bollinger, MM…) se calculent automatiquement.</p>
       
       <div class="actions">
         <button onclick="calcTechnical()">Analyser + graphique</button>
-        <button class="secondary" onclick="loadSampleTechnical()">Charger exemple SNTS</button>
       </div>
 
       <div id="technicalScore" class="hidden"></div>
@@ -193,7 +177,6 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </section>
 
-  <!-- PORTFOLIO -->
   <section id="portfolio" class="screen">
     <div class="card">
       <h2>Mon portefeuille</h2>
@@ -217,7 +200,6 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </section>
 
-  <!-- DATA -->
   <section id="data" class="screen">
     <div class="card">
       <h2>Mise à jour des données de marché</h2>
@@ -242,23 +224,9 @@ th{background:#f3f6fa;color:var(--navy)}
 </main>
 
 <script>
-/* ========== DATA ========== */
 const companies = [
 ['ABJC','SERVAIR ABIDJAN CI','Industrie'],['BICC','BICICI','Services financiers'],['BBGC','BRIDGE BANK GROUP CÔTE D\'IVOIRE','Services financiers'],['BICB','BANQUE INTERNATIONALE POUR L\'INDUSTRIE ET LE COMMERCE DU BÉNIN','Services financiers'],['BNBC','BERNABÉ CI','Consommation discrétionnaire'],['BOAB','BANK OF AFRICA BÉNIN','Services financiers'],['BOABF','BANK OF AFRICA BURKINA FASO','Services financiers'],['BOAC','BANK OF AFRICA CÔTE D\'IVOIRE','Services financiers'],['BOAM','BANK OF AFRICA MALI','Services financiers'],['BOAN','BANK OF AFRICA NIGER','Services financiers'],['BOAS','BANK OF AFRICA SÉNÉGAL','Services financiers'],['CABC','SICABLE','Industrie'],['CBIBF','CORIS BANK INTERNATIONAL BURKINA FASO','Services financiers'],['CFAC','CFAO MOTORS CI','Consommation discrétionnaire'],['CIEC','CIE','Services publics'],['ECOC','ECOBANK CÔTE D\'IVOIRE','Services financiers'],['ETIT','ECOTI','Services financiers'],['FTSC','FILTISAC','Industrie'],['LNBB','LOTERIE NATIONALE DU BÉNIN','Consommation discrétionnaire'],['NEIC','NEI-CEDA','Consommation discrétionnaire'],['NSBC','NSIA BANQUE CÔTE D\'IVOIRE','Services financiers'],['NTLC','NESTLÉ CÔTE D\'IVOIRE','Consommation de base'],['ONTBF','ONATEL BURKINA FASO','Télécommunications'],['ORAC','ORANGE CÔTE D\'IVOIRE','Télécommunications'],['ORGT','ORAGROUP','Services financiers'],['PALC','PALMCI','Consommation de base'],['PRSC','TRACTAFRIC MOTORS CI','Consommation discrétionnaire'],['SAFC','SICOR','Industrie'],['SCRC','SUCRIVOIRE','Consommation de base'],['SDCC','SODECI','Services publics'],['SDSC','SODE CI','Services publics'],['SEMC','SAFCA','Services financiers'],['SGBC','SOCIÉTÉ GÉNÉRALE CÔTE D\'IVOIRE','Services financiers'],['SHEC','VIVO ENERGY CÔTE D\'IVOIRE','Énergie'],['SIBC','SOCIÉTÉ IVOIRIENNE DE BANQUE','Services financiers'],['SICC','SICOR','Consommation de base'],['SIVC','SIVOA','Industrie'],['SLBC','SOLIBRA','Consommation de base'],['SMBC','SMB CI','Énergie'],['SNTS','SONATEL','Télécommunications'],['SOGC','SOGB','Consommation de base'],['SPHC','SAPH','Industrie'],['STAC','SETAO','Industrie'],['STBC','SITAB','Consommation de base'],['TTLC','TOTALENERGIES MARKETING CÔTE D\'IVOIRE','Énergie'],['TTLS','TOTALENERGIES MARKETING SÉNÉGAL','Énergie'],['UNLC','UNILEVER CÔTE D\'IVOIRE','Consommation de base'],['UNXC','UNIWAX','Industrie'],['TTRC','TRITURAF','Consommation de base'],['SRIC','SARI','Consommation de base'],['SDCC2','SODECI / instrument à vérifier','Services publics']
 ];
-
-/* Données fondamentales ILLUSTRATIVES (pédagogiques) — à vérifier avec les rapports officiels */
-const sampleFundamentals = {
-  SNTS: {price:44980, eps:3200, dividend:2500, book:18000, revenueOld:850000000000, revenueNew:920000000000, profitOld:280000000000, profitNew:310000000000, debt:150000000000, equity:900000000000, growth:6},
-  ORAC: {price:21895, eps:1450, dividend:900, book:8500, revenueOld:420000000000, revenueNew:455000000000, profitOld:95000000000, profitNew:105000000000, debt:80000000000, equity:450000000000, growth:7},
-  SGBC: {price:39200, eps:2800, dividend:1800, book:22000, revenueOld:180000000000, revenueNew:195000000000, profitOld:55000000000, profitNew:62000000000, debt:0, equity:320000000000, growth:5},
-  NTLC: {price:15295, eps:980, dividend:650, book:6200, revenueOld:95000000000, revenueNew:102000000000, profitOld:18000000000, profitNew:19500000000, debt:12000000000, equity:85000000000, growth:4},
-  BOAC: {price:11295, eps:850, dividend:400, book:7500, revenueOld:110000000000, revenueNew:118000000000, profitOld:28000000000, profitNew:31000000000, debt:0, equity:180000000000, growth:6},
-  SLBC: {price:37950, eps:2100, dividend:1200, book:15000, revenueOld:75000000000, revenueNew:82000000000, profitOld:12000000000, profitNew:14500000000, debt:25000000000, equity:95000000000, growth:8}
-};
-
-/* Exemple de cours historiques SNTS (illustratif) */
-const samplePricesSNTS = [38500,38800,39200,39050,39500,39800,40100,39900,40500,40800,41200,41000,41500,41800,42200,42000,42500,42800,43200,43000,43500,43800,44200,44000,44500,44800,45100,44900,45200,45500,45800,45600,46000,46200,45900,45500,45200,44800,45000,45300,45600,45400,45100,44900,44700,45000,45200,44980];
 
 const get = (k,d=[]) => { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } };
 const set = (k,v) => localStorage.setItem(k, JSON.stringify(v));
@@ -269,13 +237,24 @@ const num = id => parseFloat(document.getElementById(id).value) || 0;
 
 let priceChart = null, rsiChart = null;
 
-/* ========== NAV ========== */
+document.addEventListener('DOMContentLoaded', () => {
+  const fSym = document.getElementById('fSymbol');
+  if (fSym) {
+    const fillPrice = () => {
+      const s = (fSym.value || '').toUpperCase().trim();
+      fSym.value = s;
+      if (quotes[s]) document.getElementById('fPrice').value = quotes[s].price;
+    };
+    fSym.addEventListener('change', fillPrice);
+    fSym.addEventListener('blur', fillPrice);
+  }
+});
+
 document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('active', x === b));
   document.querySelectorAll('.screen').forEach(x => x.classList.toggle('active', x.id === b.dataset.tab));
 }));
 
-/* ========== QUOTES ========== */
 async function loadRemoteQuotes() {
   try {
     const response = await fetch('quotes.json?t=' + Date.now(), {cache: 'no-store'});
@@ -300,7 +279,6 @@ async function loadRemoteQuotes() {
   } catch (e) { console.error('Erreur cotations :', e); }
 }
 
-/* ========== COMPANIES ========== */
 function renderCompanies() {
   let sectors = [...new Set(companies.map(c => c[2]))].sort();
   let sf = document.getElementById('sectorFilter');
@@ -327,31 +305,8 @@ function analyzeSymbol(s) {
     document.getElementById('fPrice').value = quotes[s].price;
     document.getElementById('pCurrent').value = quotes[s].price;
   }
-  if (sampleFundamentals[s]) {
-    document.getElementById('fSample').value = s;
-    loadSampleFundamental();
-  }
+  document.getElementById('fEPS').focus();
   document.querySelector('[data-tab="fundamental"]').click();
-}
-
-/* ========== FUNDAMENTAL ========== */
-function loadSampleFundamental() {
-  const s = document.getElementById('fSample').value;
-  if (!s || !sampleFundamentals[s]) return;
-  const d = sampleFundamentals[s];
-  document.getElementById('fSymbol').value = s;
-  document.getElementById('fPrice').value = d.price;
-  document.getElementById('fEPS').value = d.eps;
-  document.getElementById('fDividend').value = d.dividend;
-  document.getElementById('fBook').value = d.book;
-  document.getElementById('fRevenueOld').value = d.revenueOld;
-  document.getElementById('fRevenueNew').value = d.revenueNew;
-  document.getElementById('fProfitOld').value = d.profitOld;
-  document.getElementById('fProfitNew').value = d.profitNew;
-  document.getElementById('fDebt').value = d.debt;
-  document.getElementById('fEquity').value = d.equity;
-  document.getElementById('fGrowth').value = d.growth;
-  calcFundamental();
 }
 
 function calcFundamental() {
@@ -373,7 +328,6 @@ function calcFundamental() {
   const peg = (per && pg && pg > 0) ? per / pg : null;
   const netMargin = rn > 0 ? 100 * pn / rn : null;
 
-  // Scoring (0-10)
   let score = 5;
   if (per !== null) { if (per < 8) score += 1.5; else if (per < 12) score += 1; else if (per > 20) score -= 1.5; else if (per > 15) score -= 0.5; }
   if (dy !== null) { if (dy >= 5) score += 1; else if (dy >= 3) score += 0.5; else if (dy < 1) score -= 0.5; }
@@ -422,17 +376,9 @@ function calcFundamental() {
 function clearFundamental() {
   document.querySelectorAll('#fundamental input').forEach(x => x.value = '');
   document.getElementById('fGrowth').value = 5;
-  document.getElementById('fSample').value = '';
   document.getElementById('fundamentalResults').innerHTML = '';
   document.getElementById('fundamentalScore').classList.add('hidden');
   document.getElementById('fundamentalComment').classList.add('hidden');
-}
-
-/* ========== TECHNICAL ========== */
-function loadSampleTechnical() {
-  document.getElementById('tSymbol').value = 'SNTS';
-  document.getElementById('tPrices').value = samplePricesSNTS.join(', ');
-  calcTechnical();
 }
 
 function sma(arr, n) {
@@ -501,7 +447,6 @@ function calcTechnical() {
   const macd = calcMACD(vals);
   const stoch = calcStochastic(vals);
 
-  // Score technique
   let tScore = 5;
   if (rsi !== null) {
     if (rsi >= 30 && rsi <= 50) tScore += 1;
@@ -543,7 +488,6 @@ function calcTechnical() {
     `<div class="metric"><span>${a[0]}</span><strong style="font-size:16px">${a[1]}</strong></div>`
   ).join('');
 
-  // Charts
   const labels = vals.map((_, i) => i + 1);
   if (priceChart) priceChart.destroy();
   if (rsiChart) rsiChart.destroy();
@@ -590,7 +534,6 @@ function calcTechnical() {
     }
   });
 
-  // RSI chart
   const rsiArr = vals.map((_, i) => {
     if (i < 14) return null;
     return calcRSI(vals.slice(0, i+1));
@@ -631,7 +574,6 @@ function calcTechnical() {
   document.getElementById('technicalComment').classList.remove('hidden');
 }
 
-/* ========== PORTFOLIO ========== */
 function addHolding() {
   const symbol = (document.getElementById('pSymbol').value || '').toUpperCase().trim();
   const qty = num('pQty');
@@ -673,7 +615,6 @@ function exportPortfolio() {
   a.click();
 }
 
-/* ========== DATA IMPORT ========== */
 function importCSV() {
   const f = document.getElementById('csvFile').files[0];
   if (!f) { showImport('Choisis d\'abord un fichier CSV.'); return; }
@@ -723,7 +664,6 @@ function downloadTemplate() {
   a.click();
 }
 
-/* ========== INIT ========== */
 renderCompanies();
 renderPortfolio();
 loadRemoteQuotes();
