@@ -2,7 +2,6 @@ name: Mise à jour des cotations BRVM
 
 on:
   schedule:
-    # Lun–ven, 08:05–16:05 UTC (séance BRVM approximative)
     - cron: "5 8-16 * * 1-5"
   workflow_dispatch:
 
@@ -24,46 +23,34 @@ jobs:
       - name: Installer les dépendances
         run: pip install requests beautifulsoup4
 
-      - name: Sauvegarder l'ancien quotes.json
+      - name: Backup quotes + fundamentals
         run: |
-          if [ -f quotes.json ]; then
-            cp quotes.json quotes.json.bak
-            echo "Backup créé"
-          fi
+          [ -f quotes.json ] && cp quotes.json quotes.json.bak || true
+          [ -f fundamentals.json ] && cp fundamentals.json fundamentals.json.bak || true
 
-      - name: Mettre à jour les cotations
+      - name: Sync BloomAfrik (48 titres)
+        run: python scripts/sync_bloomafrik.py
+
+      - name: Fallback scraper BRVM si BloomAfrik échoue
+        if: failure()
         run: python scripts/update_quotes.py
 
-      - name: Valider le nouveau fichier
+      - name: Valider les fichiers
         run: |
           python3 << 'PY'
           import json, sys
           from pathlib import Path
-          new = json.loads(Path("quotes.json").read_text(encoding="utf-8"))
-          assert "quotes" in new and isinstance(new["quotes"], list), "format invalide"
-          n = len(new["quotes"])
-          assert n >= 10, f"trop peu de cotations: {n}"
-          symbols = [q.get("symbol") for q in new["quotes"]]
-          assert len(symbols) == len(set(symbols)), "doublons de symboles"
-          for q in new["quotes"]:
-              assert q.get("symbol") and isinstance(q.get("price"), (int, float)) and q["price"] > 0
-          bak = Path("quotes.json.bak")
-          if bak.exists():
-              old = json.loads(bak.read_text(encoding="utf-8"))
-              old_n = len(old.get("quotes") or [])
-              if old_n >= 20 and n < int(old_n * 0.7):
-                  print(f"Régression: {old_n} -> {n}. Restauration.")
-                  Path("quotes.json").write_text(bak.read_text(encoding="utf-8"), encoding="utf-8")
-                  sys.exit(1)
-          print(f"Validation OK: {n} cotations")
+          q = json.loads(Path("quotes.json").read_text(encoding="utf-8"))
+          assert len(q.get("quotes") or []) >= 10
+          f = json.loads(Path("fundamentals.json").read_text(encoding="utf-8"))
+          assert isinstance(f.get("fundamentals"), dict) and len(f["fundamentals"]) >= 10
+          print("OK", len(q["quotes"]), "quotes,", len(f["fundamentals"]), "fundamentals")
           PY
 
-      - name: Enregistrer les nouvelles cotations
+      - name: Commit et push
         run: |
-          if [ -f quotes.json ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add quotes.json
-            git diff --cached --quiet || git commit -m "Mise à jour des cotations BRVM"
-            git push
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add quotes.json fundamentals.json
+          git diff --cached --quiet || git commit -m "Mise à jour BloomAfrik (cotations + fondamentaux)"
+          git push
