@@ -36,13 +36,14 @@ def main():
         response.text, "html.parser"
     ).get_text(" ", strip=True)
 
-    seen = set()
-    quotes = []
+    # Dernière occurrence gagne (le Top 5 / tableau de fin de page
+    # est souvent plus fiable que le bandeau ticker)
+    by_symbol = {}
 
     for match in QUOTE_RE.finditer(page_text):
         symbol, raw_price, raw_change = match.groups()
 
-        if symbol in EXCLUDED or symbol in seen:
+        if symbol in EXCLUDED:
             continue
 
         try:
@@ -54,12 +55,13 @@ def main():
         if price <= 0:
             continue
 
-        seen.add(symbol)
-        quotes.append({
+        by_symbol[symbol] = {
             "symbol": symbol,
             "price": price,
             "variation_pct": change,
-        })
+        }
+
+    quotes = sorted(by_symbol.values(), key=lambda q: q["symbol"])
 
     if len(quotes) < 10:
         raise SystemExit(
@@ -79,7 +81,8 @@ def main():
         "quotes": quotes,
         "notice": (
             "Données extraites de la page publique BRVM. "
-            "Confirmer la date de séance officielle."
+            "En cas de conflit ticker/Top5, dernière occurrence retenue. "
+            "Confirmer avec le bulletin officiel."
         ),
     }
 
