@@ -1,1 +1,2 @@
-PLACEHOLDER_WILL_FAIL
+/* restored - see next commit */
+console.error('loading...');
