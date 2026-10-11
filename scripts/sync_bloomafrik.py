@@ -102,8 +102,11 @@ def build_fundamentals(stocks, previous):
             f["profitNew"] = int(ni * SCALE)
         if eq is not None:
             f["equity"] = int(eq * SCALE)
+        # total_liabilities (surtout banques) != dette financiere
         if liab is not None:
-            f["debt"] = int(liab * SCALE)
+            f["total_liabilities"] = int(liab * SCALE)
+            if f.get("debt") and f["debt"] == int(liab * SCALE):
+                del f["debt"]
         if roe is not None:
             f["roe"] = round(roe, 2)
         if px and bv and bv > 0:
@@ -114,7 +117,7 @@ def build_fundamentals(stocks, previous):
 
     return {
         "updated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        "notice": "Données synchronisées depuis api.bloomafrik.com (48 titres). Montants CA/RN/CP/dettes en FCFA (×1000 depuis l'API).",
+        "notice": "Données api.bloomafrik.com (48 titres). Passif total != dette financière.",
         "market_aligned": sorted(out.keys()),
         "real_tickers": sorted(t for t, f in out.items() if f.get("real_ca")),
         "fundamentals": out,
