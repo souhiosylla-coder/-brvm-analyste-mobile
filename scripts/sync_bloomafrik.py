@@ -9,7 +9,7 @@ from pathlib import Path
 import requests
 
 API = "https://api.bloomafrik.com/api/v1/stocks"
-SCALE = 1000  # montants API en milliers de FCFA
+SCALE = 1000
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -71,10 +71,17 @@ def build_fundamentals(stocks, previous):
     for s in stocks:
         t = s["ticker"]
         f = dict(prev_f.get(t) or {})
-        eps, dps, bv = fnum(s.get("eps")), fnum(s.get("dividend_per_share")), fnum(s.get("book_value_per_share"))
-        per, dy, mcap = fnum(s.get("per_ratio")), fnum(s.get("dividend_yield")), fnum(s.get("market_cap"))
-        rev, ni, eq = fnum(s.get("revenue")), fnum(s.get("net_income")), fnum(s.get("shareholder_equity"))
-        liab, roe = fnum(s.get("total_liabilities")), fnum(s.get("roe_pct"))
+        eps = fnum(s.get("eps"))
+        dps = fnum(s.get("dividend_per_share"))
+        bv = fnum(s.get("book_value_per_share"))
+        per = fnum(s.get("per_ratio"))
+        dy = fnum(s.get("dividend_yield"))
+        mcap = fnum(s.get("market_cap"))
+        rev = fnum(s.get("revenue"))
+        ni = fnum(s.get("net_income"))
+        eq = fnum(s.get("shareholder_equity"))
+        liab = fnum(s.get("total_liabilities"))
+        roe = fnum(s.get("roe_pct"))
         px = fnum(s.get("close_price"))
 
         if eps is not None:
@@ -120,7 +127,12 @@ def main():
     prev = None
     fp = ROOT / "fundamentals.json"
     if fp.exists():
-        prev = json.loads(fp.read_text(encoding="utf-8"))
+        try:
+            prev = json.loads(fp.read_text(encoding="utf-8"))
+            if not isinstance(prev.get("fundamentals"), dict):
+                prev = None
+        except json.JSONDecodeError:
+            prev = None
     fund = build_fundamentals(stocks, prev)
 
     (ROOT / "quotes.json").write_text(json.dumps(quotes, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
