@@ -71,7 +71,6 @@ th{background:#f3f6fa;color:var(--navy)}
     </div>
   </div>
 </header>
-
 <main class="wrap">
   <div class="nav">
     <button class="active" data-tab="dashboard">Vue d'ensemble</button>
@@ -81,12 +80,11 @@ th{background:#f3f6fa;color:var(--navy)}
     <button data-tab="portfolio">Portefeuille</button>
     <button data-tab="data">Données & import</button>
   </div>
-
   <section id="dashboard" class="screen active">
     <div class="card">
       <h2>Bienvenue dans ton analyste BRVM</h2>
       <p>Outil mobile complet pour analyser les sociétés cotées à la BRVM : ratios fondamentaux, indicateurs techniques, graphiques, scoring et suivi de portefeuille.</p>
-      <div class="notice"><b>Important :</b> le cours est chargé automatiquement depuis les cotations BRVM. Pour l’analyse fondamentale, saisis les données des <b>rapports officiels</b> des sociétés (bénéfice, dividendes, etc.).</div>
+      <div class="notice"><b>Important :</b> Cours et ratios fondamentaux sont chargés <b>automatiquement</b> pour les 48 actions. Clique sur <b>Analyser</b> pour voir PER, rendement, ROE, score, etc. Données indicatives — vérifier les rapports officiels.</div>
       <div class="actions">
         <a class="btn" href="https://www.brvm.org/fr/flux-differe" target="_blank" rel="noopener">Cours BRVM différés</a>
         <a class="btn secondary" href="https://bfin.brvm.org/Activites_marche.aspx" target="_blank" rel="noopener">Activité du marché</a>
@@ -98,38 +96,21 @@ th{background:#f3f6fa;color:var(--navy)}
       <div class="card metric"><span>Valeur du portefeuille</span><strong id="portfolioValue">0 FCFA</strong></div>
       <div class="card metric"><span>Dernière mise à jour</span><strong id="lastUpdate" style="font-size:14px">Aucune</strong></div>
     </div>
-    <div class="card">
-      <h2>Parcours conseillé pour l'investisseur long terme</h2>
-      <ol>
-        <li>Vérifier le cours officiel et la date de cotation.</li>
-        <li>Étudier bénéfices, dividendes, endettement et rentabilité (analyse fondamentale).</li>
-        <li>Observer la tendance et les indicateurs techniques.</li>
-        <li>Comparer le prix de marché à une valeur estimative prudente.</li>
-        <li>Diversifier et suivre régulièrement les résultats.</li>
-      </ol>
-    </div>
   </section>
-
   <section id="companies" class="screen">
     <div class="card">
       <h2>Répertoire des sociétés et symboles</h2>
-      <p class="muted">Répertoire indicatif. Clique sur <b>Analyser</b> : le cours est chargé automatiquement, puis saisis les données financières pour obtenir tous les ratios.</p>
+      <p class="muted">Clique sur <b>Analyser</b> : tous les ratios (PER, dividende, ROE, score…) s’affichent automatiquement pour chaque action.</p>
       <input id="companySearch" placeholder="Rechercher un nom ou un symbole…">
       <label>Filtrer par secteur</label>
       <select id="sectorFilter"><option value="">Tous les secteurs</option></select>
       <div id="companyList"></div>
-      <div class="actions">
-        <a class="btn secondary" href="https://bfin.brvm.org/Instruments.aspx" target="_blank" rel="noopener">Liste officielle des instruments</a>
-        <a class="btn secondary" href="https://www.brvm.org/fr/rapports-societes-cotees?field_secteur_emeteur_tid=All" target="_blank" rel="noopener">Rapports des sociétés</a>
-      </div>
     </div>
   </section>
-
   <section id="fundamental" class="screen">
     <div class="card">
       <h2>Analyse fondamentale</h2>
-      <p class="muted">Le <b>cours</b> se charge automatiquement depuis les cotations BRVM. Saisis ensuite les données des derniers états financiers publiés pour calculer automatiquement tous les ratios et le score.</p>
-
+      <p class="muted">Les données fondamentales et le cours se chargent <b>automatiquement</b>. Tu peux modifier les valeurs si besoin, puis recalculer.</p>
       <div class="row" style="margin-top:10px">
         <div><label>Symbole</label><input id="fSymbol" placeholder="Ex. SNTS"></div>
         <div><label>Cours actuel (FCFA)</label><input id="fPrice" type="number" min="0"></div>
@@ -148,27 +129,21 @@ th{background:#f3f6fa;color:var(--navy)}
         <button onclick="calcFundamental()">Calculer ratios + score</button>
         <button class="secondary" onclick="clearFundamental()">Effacer</button>
       </div>
-
       <div id="fundamentalScore" class="hidden"></div>
       <div id="fundamentalResults" class="row wide" style="margin-top:12px"></div>
       <div id="fundamentalComment" class="notice hidden"></div>
-      <p class="muted">Valeur estimative = BPA × (8 + 2 × croissance %), croissance plafonnée 0-15 %. Formule simplifiée pédagogique — pas un conseil d'investissement.</p>
+      <p class="muted">Valeur estimative = BPA × (8 + 2 × croissance %). Données indicatives — pas un conseil d'investissement.</p>
     </div>
   </section>
-
   <section id="technical" class="screen">
     <div class="card">
       <h2>Analyse technique</h2>
       <label>Symbole</label>
       <input id="tSymbol" placeholder="Ex. BOAC">
       <label>Historique des cours de clôture (du plus ancien au plus récent)</label>
-      <textarea id="tPrices" placeholder="10000, 10100, 9950, 10300, 10450, 10600…"></textarea>
-      <p class="muted">Idéalement ≥ 50 clôtures. Colle les cours séparés par virgules, espaces ou retours à la ligne. Tous les indicateurs (RSI, MACD, Bollinger, MM…) se calculent automatiquement.</p>
-      
-      <div class="actions">
-        <button onclick="calcTechnical()">Analyser + graphique</button>
-      </div>
-
+      <textarea id="tPrices" placeholder="10000, 10100, 9950, 10300…"></textarea>
+      <p class="muted">Colle l'historique pour RSI, MACD, Bollinger, MM automatiques.</p>
+      <div class="actions"><button onclick="calcTechnical()">Analyser + graphique</button></div>
       <div id="technicalScore" class="hidden"></div>
       <div id="technicalResults" class="row wide" style="margin-top:12px"></div>
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
@@ -176,497 +151,69 @@ th{background:#f3f6fa;color:var(--navy)}
       <div id="technicalComment" class="notice hidden"></div>
     </div>
   </section>
-
   <section id="portfolio" class="screen">
     <div class="card">
       <h2>Mon portefeuille</h2>
       <div class="row">
         <div><label>Symbole</label><input id="pSymbol" placeholder="Ex. SNTS"></div>
-        <div><label>Quantité détenue</label><input id="pQty" type="number" min="0"></div>
-        <div><label>Prix moyen d'achat (FCFA)</label><input id="pCost" type="number" min="0"></div>
-        <div><label>Dernier cours (FCFA)</label><input id="pCurrent" type="number" min="0"></div>
+        <div><label>Quantité</label><input id="pQty" type="number" min="0"></div>
+        <div><label>Prix moyen</label><input id="pCost" type="number" min="0"></div>
+        <div><label>Dernier cours</label><input id="pCurrent" type="number" min="0"></div>
       </div>
       <div class="actions">
-        <button onclick="addHolding()">Ajouter / mettre à jour</button>
+        <button onclick="addHolding()">Ajouter</button>
         <button class="secondary" onclick="exportPortfolio()">Exporter CSV</button>
       </div>
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>Valeur</th><th>Qté</th><th>Prix moyen</th><th>Cours</th><th>Valeur</th><th>+/- latent</th><th></th></tr></thead>
-          <tbody id="portfolioRows"></tbody>
-        </table>
-      </div>
-      <p class="muted">Données stockées localement dans ce navigateur. Exporte régulièrement une copie CSV.</p>
+      <div class="tablewrap"><table><thead><tr><th>Valeur</th><th>Qté</th><th>Prix moyen</th><th>Cours</th><th>Valeur</th><th>+/-</th><th></th></tr></thead><tbody id="portfolioRows"></tbody></table></div>
     </div>
   </section>
-
   <section id="data" class="screen">
     <div class="card">
-      <h2>Mise à jour des données de marché</h2>
-      <p>Importe un CSV de cotations pour mettre à jour les cours. La synchronisation automatique utilise le fichier <code>quotes.json</code> mis à jour par GitHub Actions.</p>
-      <div class="actions">
-        <a class="btn" href="https://www.brvm.org/fr/flux-differe" target="_blank" rel="noopener">Cours BRVM différés</a>
-        <a class="btn secondary" href="https://www.brvm.org/fr/services/catalogues-de-services" target="_blank" rel="noopener">Offres de données BRVM</a>
-      </div>
-      <h3>Importer un fichier CSV</h3>
-      <p class="muted">Colonnes : symbole, cours, date. Exemple : SNTS,44980,2026-10-10</p>
+      <h2>Données de marché</h2>
+      <p>Cotations auto via <code>quotes.json</code>. Fondamentaux via <code>fundamentals.json</code>.</p>
       <input id="csvFile" type="file" accept=".csv,text/csv">
       <div class="actions">
-        <button onclick="importCSV()">Importer les cours</button>
-        <button class="secondary" onclick="downloadTemplate()">Télécharger le modèle CSV</button>
-        <button class="secondary" onclick="clearQuotes()">Effacer les cours importés</button>
+        <button onclick="importCSV()">Importer CSV</button>
+        <button class="secondary" onclick="downloadTemplate()">Modèle CSV</button>
+        <button class="secondary" onclick="clearQuotes()">Effacer cours</button>
       </div>
       <div id="importMessage" class="notice hidden"></div>
     </div>
   </section>
-
-  <div class="foot">Outil d'aide à la décision — les ratios, scores et estimations ne constituent pas un conseil financier personnalisé.</div>
+  <div class="foot">Outil d'aide à la décision — pas un conseil financier personnalisé.</div>
 </main>
-
 <script>
-const companies = [
-['ABJC','SERVAIR ABIDJAN CI','Industrie'],['BICC','BICICI','Services financiers'],['BBGC','BRIDGE BANK GROUP CÔTE D\'IVOIRE','Services financiers'],['BICB','BANQUE INTERNATIONALE POUR L\'INDUSTRIE ET LE COMMERCE DU BÉNIN','Services financiers'],['BNBC','BERNABÉ CI','Consommation discrétionnaire'],['BOAB','BANK OF AFRICA BÉNIN','Services financiers'],['BOABF','BANK OF AFRICA BURKINA FASO','Services financiers'],['BOAC','BANK OF AFRICA CÔTE D\'IVOIRE','Services financiers'],['BOAM','BANK OF AFRICA MALI','Services financiers'],['BOAN','BANK OF AFRICA NIGER','Services financiers'],['BOAS','BANK OF AFRICA SÉNÉGAL','Services financiers'],['CABC','SICABLE','Industrie'],['CBIBF','CORIS BANK INTERNATIONAL BURKINA FASO','Services financiers'],['CFAC','CFAO MOTORS CI','Consommation discrétionnaire'],['CIEC','CIE','Services publics'],['ECOC','ECOBANK CÔTE D\'IVOIRE','Services financiers'],['ETIT','ECOTI','Services financiers'],['FTSC','FILTISAC','Industrie'],['LNBB','LOTERIE NATIONALE DU BÉNIN','Consommation discrétionnaire'],['NEIC','NEI-CEDA','Consommation discrétionnaire'],['NSBC','NSIA BANQUE CÔTE D\'IVOIRE','Services financiers'],['NTLC','NESTLÉ CÔTE D\'IVOIRE','Consommation de base'],['ONTBF','ONATEL BURKINA FASO','Télécommunications'],['ORAC','ORANGE CÔTE D\'IVOIRE','Télécommunications'],['ORGT','ORAGROUP','Services financiers'],['PALC','PALMCI','Consommation de base'],['PRSC','TRACTAFRIC MOTORS CI','Consommation discrétionnaire'],['SAFC','SICOR','Industrie'],['SCRC','SUCRIVOIRE','Consommation de base'],['SDCC','SODECI','Services publics'],['SDSC','SODE CI','Services publics'],['SEMC','SAFCA','Services financiers'],['SGBC','SOCIÉTÉ GÉNÉRALE CÔTE D\'IVOIRE','Services financiers'],['SHEC','VIVO ENERGY CÔTE D\'IVOIRE','Énergie'],['SIBC','SOCIÉTÉ IVOIRIENNE DE BANQUE','Services financiers'],['SICC','SICOR','Consommation de base'],['SIVC','SIVOA','Industrie'],['SLBC','SOLIBRA','Consommation de base'],['SMBC','SMB CI','Énergie'],['SNTS','SONATEL','Télécommunications'],['SOGC','SOGB','Consommation de base'],['SPHC','SAPH','Industrie'],['STAC','SETAO','Industrie'],['STBC','SITAB','Consommation de base'],['TTLC','TOTALENERGIES MARKETING CÔTE D\'IVOIRE','Énergie'],['TTLS','TOTALENERGIES MARKETING SÉNÉGAL','Énergie'],['UNLC','UNILEVER CÔTE D\'IVOIRE','Consommation de base'],['UNXC','UNIWAX','Industrie'],['TTRC','TRITURAF','Consommation de base'],['SRIC','SARI','Consommation de base'],['SDCC2','SODECI / instrument à vérifier','Services publics']
-];
-
-const get = (k,d=[]) => { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } };
-const set = (k,v) => localStorage.setItem(k, JSON.stringify(v));
-let quotes = get('brvm_quotes', {});
-let holdings = get('brvm_holdings', []);
-const fmt = n => Number(n).toLocaleString('fr-FR', {maximumFractionDigits:2});
-const num = id => parseFloat(document.getElementById(id).value) || 0;
-
-let priceChart = null, rsiChart = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-  const fSym = document.getElementById('fSymbol');
-  if (fSym) {
-    const fillPrice = () => {
-      const s = (fSym.value || '').toUpperCase().trim();
-      fSym.value = s;
-      if (quotes[s]) document.getElementById('fPrice').value = quotes[s].price;
-    };
-    fSym.addEventListener('change', fillPrice);
-    fSym.addEventListener('blur', fillPrice);
-  }
-});
-
-document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.nav button').forEach(x => x.classList.toggle('active', x === b));
-  document.querySelectorAll('.screen').forEach(x => x.classList.toggle('active', x.id === b.dataset.tab));
-}));
-
-async function loadRemoteQuotes() {
-  try {
-    const response = await fetch('quotes.json?t=' + Date.now(), {cache: 'no-store'});
-    if (!response.ok) throw new Error('Impossible de charger les cotations');
-    const data = await response.json();
-    if (!Array.isArray(data.quotes)) throw new Error('Format incorrect');
-    const remoteQuotes = {};
-    data.quotes.forEach(q => {
-      if (q.symbol && Number(q.price) > 0) {
-        remoteQuotes[q.symbol] = {price: Number(q.price), date: data.retrieved_on || '', variation_pct: Number(q.variation_pct) || 0};
-      }
-    });
-    quotes = {...quotes, ...remoteQuotes};
-    set('brvm_quotes', quotes);
-    holdings = holdings.map(h => remoteQuotes[h.symbol] ? {...h, current: remoteQuotes[h.symbol].price} : h);
-    set('brvm_holdings', holdings);
-    renderCompanies();
-    renderPortfolio();
-    document.getElementById('lastUpdate').textContent = data.updated_at_utc
-      ? new Date(data.updated_at_utc).toLocaleString('fr-FR', {timeZone: 'Africa/Abidjan'})
-      : 'Données chargées';
-  } catch (e) { console.error('Erreur cotations :', e); }
-}
-
-function renderCompanies() {
-  let sectors = [...new Set(companies.map(c => c[2]))].sort();
-  let sf = document.getElementById('sectorFilter');
-  if (sf.options.length === 1) sectors.forEach(s => sf.add(new Option(s, s)));
-  let q = (document.getElementById('companySearch').value || '').toLowerCase();
-  let sec = sf.value;
-  let list = companies.filter(c => (!sec || c[2] === sec) && c.join(' ').toLowerCase().includes(q));
-  document.getElementById('companyList').innerHTML = list.map(c =>
-    `<div class="company">
-      <div><b>${c[0]}</b> — ${c[1]}</div>
-      <div class="muted">${c[2]} · Cours : ${quotes[c[0]] ? fmt(quotes[c[0]].price) + ' FCFA' : 'non renseigné'}</div>
-      <div class="actions"><button class="secondary" onclick="analyzeSymbol('${c[0]}')">Analyser</button></div>
-    </div>`
-  ).join('') || '<p class="muted">Aucun résultat.</p>';
-  document.getElementById('companyCount').textContent = companies.length;
-  document.getElementById('quoteCount').textContent = Object.keys(quotes).length;
-}
-document.getElementById('companySearch').addEventListener('input', renderCompanies);
-document.getElementById('sectorFilter').addEventListener('change', renderCompanies);
-
-function analyzeSymbol(s) {
-  ['fSymbol','tSymbol','pSymbol'].forEach(id => document.getElementById(id).value = s);
-  if (quotes[s]) {
-    document.getElementById('fPrice').value = quotes[s].price;
-    document.getElementById('pCurrent').value = quotes[s].price;
-  }
-  document.getElementById('fEPS').focus();
-  document.querySelector('[data-tab="fundamental"]').click();
-}
-
-function calcFundamental() {
-  const p = num('fPrice'), eps = num('fEPS'), d = num('fDividend'), book = num('fBook');
-  const ro = num('fRevenueOld'), rn = num('fRevenueNew');
-  const po = num('fProfitOld'), pn = num('fProfitNew');
-  const debt = num('fDebt'), eq = num('fEquity');
-  const g = Math.min(15, Math.max(0, num('fGrowth')));
-
-  const per = (p > 0 && eps > 0) ? p / eps : null;
-  const dy = p > 0 ? 100 * d / p : null;
-  const pb = book > 0 ? p / book : null;
-  const rg = ro > 0 ? 100 * (rn - ro) / ro : null;
-  const pg = po !== 0 ? 100 * (pn - po) / Math.abs(po) : null;
-  const roe = eq > 0 ? 100 * pn / eq : null;
-  const lev = eq > 0 ? debt / eq : null;
-  const fv = eps > 0 ? eps * (8 + 2 * g) : null;
-  const mos = (fv && p > 0) ? 100 * (fv - p) / fv : null;
-  const peg = (per && pg && pg > 0) ? per / pg : null;
-  const netMargin = rn > 0 ? 100 * pn / rn : null;
-
-  let score = 5;
-  if (per !== null) { if (per < 8) score += 1.5; else if (per < 12) score += 1; else if (per > 20) score -= 1.5; else if (per > 15) score -= 0.5; }
-  if (dy !== null) { if (dy >= 5) score += 1; else if (dy >= 3) score += 0.5; else if (dy < 1) score -= 0.5; }
-  if (pb !== null) { if (pb < 1) score += 1; else if (pb < 1.5) score += 0.5; else if (pb > 3) score -= 1; }
-  if (roe !== null) { if (roe >= 15) score += 1; else if (roe >= 10) score += 0.5; else if (roe < 5) score -= 1; }
-  if (lev !== null) { if (lev < 0.5) score += 0.5; else if (lev > 1.5) score -= 1; }
-  if (mos !== null) { if (mos >= 20) score += 1; else if (mos >= 10) score += 0.5; else if (mos < 0) score -= 1; }
-  if (rg !== null && rg > 5) score += 0.5;
-  score = Math.max(0, Math.min(10, Math.round(score * 10) / 10));
-
-  let label = 'Neutre', cls = 'score-neutre';
-  if (score >= 7) { label = 'Attractif'; cls = 'score-attractif'; }
-  else if (score <= 4) { label = 'Cher / Prudence'; cls = 'score-cher'; }
-
-  document.getElementById('fundamentalScore').className = 'score-box ' + cls;
-  document.getElementById('fundamentalScore').innerHTML = `<div class="score">${score}/10</div><div class="label">${label}</div>`;
-  document.getElementById('fundamentalScore').classList.remove('hidden');
-
-  const arr = [
-    ['PER', per ? fmt(per) + 'x' : '—'],
-    ['PEG', peg ? fmt(peg) + 'x' : '—'],
-    ['Rendement dividende', dy !== null ? fmt(dy) + ' %' : '—'],
-    ['Prix / Valeur comptable', pb ? fmt(pb) + 'x' : '—'],
-    ['Marge nette', netMargin !== null ? fmt(netMargin) + ' %' : '—'],
-    ['Croissance CA', rg !== null ? fmt(rg) + ' %' : '—'],
-    ['Croissance bénéfice', pg !== null ? fmt(pg) + ' %' : '—'],
-    ['ROE', roe !== null ? fmt(roe) + ' %' : '—'],
-    ['Dettes / Capitaux propres', lev !== null ? fmt(lev) + 'x' : '—'],
-    ['Valeur estimative', fv ? fmt(fv) + ' FCFA' : '—'],
-    ['Marge de sécurité', mos !== null ? fmt(mos) + ' %' : '—']
-  ];
-  document.getElementById('fundamentalResults').innerHTML = arr.map(a =>
-    `<div class="metric"><span>${a[0]}</span><strong>${a[1]}</strong></div>`
-  ).join('');
-
-  let msg = 'Interprète les ratios en les comparant au secteur et à l\'historique de la société. ';
-  if (per && per > 20) msg += 'PER élevé : le marché anticipe une forte croissance ou le titre est cher. ';
-  else if (per && per < 8) msg += 'PER bas : possible sous-valorisation, mais vérifie les risques. ';
-  if (mos !== null && mos >= 20) msg += 'Marge de sécurité ≥ 20 % selon la formule simplifiée. ';
-  if (dy && dy >= 5) msg += 'Rendement dividendes attractif. ';
-  msg += 'Ceci n\'est pas une recommandation d\'achat ou de vente.';
-  document.getElementById('fundamentalComment').textContent = msg;
-  document.getElementById('fundamentalComment').classList.remove('hidden');
-}
-
-function clearFundamental() {
-  document.querySelectorAll('#fundamental input').forEach(x => x.value = '');
-  document.getElementById('fGrowth').value = 5;
-  document.getElementById('fundamentalResults').innerHTML = '';
-  document.getElementById('fundamentalScore').classList.add('hidden');
-  document.getElementById('fundamentalComment').classList.add('hidden');
-}
-
-function sma(arr, n) {
-  if (arr.length < n) return null;
-  return arr.slice(-n).reduce((a,b) => a + b, 0) / n;
-}
-
-function calcRSI(vals, period = 14) {
-  if (vals.length < period + 1) return null;
-  let gains = 0, losses = 0;
-  for (let i = vals.length - period; i < vals.length; i++) {
-    const d = vals[i] - vals[i-1];
-    if (d > 0) gains += d; else losses -= d;
-  }
-  if (losses === 0) return 100;
-  const rs = (gains / period) / (losses / period);
-  return 100 - 100 / (1 + rs);
-}
-
-function calcBollinger(vals, n = 20, k = 2) {
-  if (vals.length < n) return null;
-  const slice = vals.slice(-n);
-  const mean = slice.reduce((a,b) => a + b, 0) / n;
-  const variance = slice.reduce((a,b) => a + (b - mean) ** 2, 0) / n;
-  const std = Math.sqrt(variance);
-  return {mid: mean, upper: mean + k * std, lower: mean - k * std};
-}
-
-function calcMACD(vals) {
-  if (vals.length < 26) return null;
-  const ema = (data, period) => {
-    const k = 2 / (period + 1);
-    let e = data[0];
-    for (let i = 1; i < data.length; i++) e = data[i] * k + e * (1 - k);
-    return e;
-  };
-  const ema12 = ema(vals.slice(-26), 12);
-  const ema26 = ema(vals.slice(-26), 26);
-  return ema12 - ema26;
-}
-
-function calcStochastic(vals, period = 14) {
-  if (vals.length < period) return null;
-  const slice = vals.slice(-period);
-  const high = Math.max(...slice);
-  const low = Math.min(...slice);
-  if (high === low) return 50;
-  return 100 * (vals[vals.length-1] - low) / (high - low);
-}
-
-function calcTechnical() {
-  const raw = document.getElementById('tPrices').value;
-  const vals = (raw.match(/-?\d+(?:[.,]\d+)?/g) || []).map(x => parseFloat(x.replace(',', '.'))).filter(Number.isFinite);
-  if (vals.length < 5) {
-    document.getElementById('technicalComment').textContent = 'Ajoute au moins 5 clôtures.';
-    document.getElementById('technicalComment').classList.remove('hidden');
-    return;
-  }
-
-  const last = vals[vals.length - 1];
-  const rsi = calcRSI(vals);
-  const ma5 = sma(vals, 5);
-  const ma20 = sma(vals, 20);
-  const ma50 = sma(vals, 50);
-  const bb = calcBollinger(vals);
-  const macd = calcMACD(vals);
-  const stoch = calcStochastic(vals);
-
-  let tScore = 5;
-  if (rsi !== null) {
-    if (rsi >= 30 && rsi <= 50) tScore += 1;
-    else if (rsi < 30) tScore += 0.5;
-    else if (rsi > 70) tScore -= 1.5;
-    else if (rsi > 60) tScore -= 0.5;
-  }
-  if (ma20 !== null && last > ma20) tScore += 1;
-  else if (ma20 !== null && last < ma20) tScore -= 0.5;
-  if (ma50 !== null && last > ma50) tScore += 0.5;
-  if (bb) {
-    if (last < bb.lower) tScore += 0.5;
-    if (last > bb.upper) tScore -= 1;
-  }
-  if (macd !== null && macd > 0) tScore += 0.5;
-  tScore = Math.max(0, Math.min(10, Math.round(tScore * 10) / 10));
-
-  let tLabel = 'Neutre', tCls = 'score-neutre';
-  if (tScore >= 7) { tLabel = 'Tendance favorable'; tCls = 'score-attractif'; }
-  else if (tScore <= 4) { tLabel = 'Prudence / Surachat'; tCls = 'score-cher'; }
-
-  document.getElementById('technicalScore').className = 'score-box ' + tCls;
-  document.getElementById('technicalScore').innerHTML = `<div class="score">${tScore}/10</div><div class="label">${tLabel}</div>`;
-  document.getElementById('technicalScore').classList.remove('hidden');
-
-  const arr = [
-    ['Dernière clôture', fmt(last) + ' FCFA'],
-    ['RSI (14)', rsi !== null ? fmt(rsi) : '—'],
-    ['Stochastic (14)', stoch !== null ? fmt(stoch) : '—'],
-    ['MACD (12/26)', macd !== null ? fmt(macd) : '—'],
-    ['MM 5', ma5 !== null ? fmt(ma5) : 'Données insuff.'],
-    ['MM 20', ma20 !== null ? fmt(ma20) : 'Données insuff.'],
-    ['MM 50', ma50 !== null ? fmt(ma50) : 'Données insuff.'],
-    ['Bollinger haut', bb ? fmt(bb.upper) : '—'],
-    ['Bollinger bas', bb ? fmt(bb.lower) : '—'],
-    ['Nb de clôtures', vals.length]
-  ];
-  document.getElementById('technicalResults').innerHTML = arr.map(a =>
-    `<div class="metric"><span>${a[0]}</span><strong style="font-size:16px">${a[1]}</strong></div>`
-  ).join('');
-
-  const labels = vals.map((_, i) => i + 1);
-  if (priceChart) priceChart.destroy();
-  if (rsiChart) rsiChart.destroy();
-
-  const datasets = [{
-    label: 'Cours',
-    data: vals,
-    borderColor: '#1d5d91',
-    backgroundColor: 'rgba(29,93,145,0.08)',
-    fill: true,
-    tension: 0.2,
-    pointRadius: 0
-  }];
-  if (ma20) {
-    const ma20arr = vals.map((_, i) => i >= 19 ? sma(vals.slice(0, i+1), 20) : null);
-    datasets.push({label: 'MM20', data: ma20arr, borderColor: '#e6ad3c', borderWidth: 1.5, pointRadius: 0, tension: 0.2});
-  }
-  if (bb) {
-    const upperArr = vals.map((_, i) => {
-      if (i < 19) return null;
-      const s = vals.slice(i-19, i+1);
-      const m = s.reduce((a,b)=>a+b,0)/20;
-      const std = Math.sqrt(s.reduce((a,b)=>a+(b-m)**2,0)/20);
-      return m + 2*std;
-    });
-    const lowerArr = vals.map((_, i) => {
-      if (i < 19) return null;
-      const s = vals.slice(i-19, i+1);
-      const m = s.reduce((a,b)=>a+b,0)/20;
-      const std = Math.sqrt(s.reduce((a,b)=>a+(b-m)**2,0)/20);
-      return m - 2*std;
-    });
-    datasets.push({label: 'BB haut', data: upperArr, borderColor: '#b33a3a', borderWidth: 1, borderDash: [4,4], pointRadius: 0});
-    datasets.push({label: 'BB bas', data: lowerArr, borderColor: '#137547', borderWidth: 1, borderDash: [4,4], pointRadius: 0});
-  }
-
-  priceChart = new Chart(document.getElementById('priceChart'), {
-    type: 'line',
-    data: {labels, datasets},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {legend: {position: 'bottom', labels: {boxWidth: 12, font: {size: 11}}}},
-      scales: {x: {display: false}, y: {ticks: {font: {size: 11}}}}
-    }
-  });
-
-  const rsiArr = vals.map((_, i) => {
-    if (i < 14) return null;
-    return calcRSI(vals.slice(0, i+1));
-  });
-  rsiChart = new Chart(document.getElementById('rsiChart'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'RSI 14',
-        data: rsiArr,
-        borderColor: '#7c3aed',
-        borderWidth: 1.5,
-        pointRadius: 0,
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {legend: {display: false}},
-      scales: {
-        x: {display: false},
-        y: {min: 0, max: 100, ticks: {font: {size: 10}},
-            grid: {color: ctx => (ctx.tick.value === 30 || ctx.tick.value === 70) ? '#f1d28b' : '#eee'}}
-      }
-    }
-  });
-
-  let msg = vals.length < 15 ? 'Ajoute au moins 15 clôtures pour un RSI fiable. ' : '';
-  if (rsi !== null) {
-    if (rsi >= 70) msg += 'RSI en zone de surachat. ';
-    else if (rsi <= 30) msg += 'RSI en zone de survente. ';
-    else msg += 'RSI en zone intermédiaire. ';
-  }
-  if (ma20 !== null) msg += last > ma20 ? 'Cours au-dessus de la MM20 (tendance haussière courte). ' : 'Cours sous la MM20. ';
-  msg += 'Confirme toujours avec les volumes, le contexte et les fondamentaux.';
-  document.getElementById('technicalComment').textContent = msg;
-  document.getElementById('technicalComment').classList.remove('hidden');
-}
-
-function addHolding() {
-  const symbol = (document.getElementById('pSymbol').value || '').toUpperCase().trim();
-  const qty = num('pQty');
-  const cost = num('pCost');
-  let current = num('pCurrent');
-  if (!symbol || qty <= 0 || cost <= 0) return alert('Remplis symbole, quantité et prix moyen.');
-  if (!current && quotes[symbol]) current = quotes[symbol].price;
-  const idx = holdings.findIndex(h => h.symbol === symbol);
-  if (idx >= 0) holdings[idx] = {symbol, qty, cost, current};
-  else holdings.push({symbol, qty, cost, current});
-  set('brvm_holdings', holdings);
-  renderPortfolio();
-}
-
-function renderPortfolio() {
-  let total = 0;
-  document.getElementById('portfolioRows').innerHTML = holdings.map((h, i) => {
-    const c = h.current || quotes[h.symbol]?.price || 0;
-    const v = h.qty * c;
-    const pnl = h.qty * (c - h.cost);
-    total += v;
-    return `<tr>
-      <td><b>${h.symbol}</b></td><td>${fmt(h.qty)}</td><td>${fmt(h.cost)}</td>
-      <td>${c ? fmt(c) : '—'}</td><td>${fmt(v)}</td>
-      <td class="${pnl >= 0 ? 'good' : 'bad'}">${fmt(pnl)}</td>
-      <td><button class="secondary" onclick="removeHolding(${i})">×</button></td>
-    </tr>`;
-  }).join('');
-  document.getElementById('portfolioValue').textContent = fmt(total) + ' FCFA';
-}
-function removeHolding(i) { holdings.splice(i, 1); set('brvm_holdings', holdings); renderPortfolio(); }
-
-function exportPortfolio() {
-  const rows = [['symbole','quantite','prix_moyen','dernier_cours'], ...holdings.map(h => [h.symbol, h.qty, h.cost, h.current || quotes[h.symbol]?.price || ''])];
-  const csv = rows.map(r => r.join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
-  a.download = 'mon_portefeuille_brvm.csv';
-  a.click();
-}
-
-function importCSV() {
-  const f = document.getElementById('csvFile').files[0];
-  if (!f) { showImport('Choisis d\'abord un fichier CSV.'); return; }
-  const reader = new FileReader();
-  reader.onload = () => {
-    const lines = String(reader.result).split(/\r?\n/).filter(x => x.trim());
-    let n = 0;
-    for (let i = 0; i < lines.length; i++) {
-      const a = lines[i].split(/[;,\t]/).map(x => x.trim().replace(/^"|"$/g, ''));
-      if (i === 0 && /symbole|symbol|code/i.test(a[0])) continue;
-      if (a.length < 2) continue;
-      const s = a[0].toUpperCase();
-      const price = parseFloat((a[1] || '').replace(/\s/g, '').replace(',', '.'));
-      const date = a[2] || new Date().toISOString().slice(0, 10);
-      if (s && Number.isFinite(price) && price > 0) { quotes[s] = {price, date}; n++; }
-    }
-    set('brvm_quotes', quotes);
-    holdings = holdings.map(h => quotes[h.symbol] ? {...h, current: quotes[h.symbol].price} : h);
-    set('brvm_holdings', holdings);
-    renderCompanies();
-    renderPortfolio();
-    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
-    showImport(n + ' cours importé(s).');
-  };
-  reader.readAsText(f);
-}
-function showImport(m) {
-  const e = document.getElementById('importMessage');
-  e.textContent = m;
-  e.classList.remove('hidden');
-}
-function clearQuotes() {
-  if (confirm('Effacer tous les cours importés ?')) {
-    quotes = {};
-    set('brvm_quotes', quotes);
-    renderCompanies();
-    renderPortfolio();
-    document.getElementById('lastUpdate').textContent = 'Aucune';
-    showImport('Cours importés effacés.');
-  }
-}
-function downloadTemplate() {
-  const blob = new Blob(['symbole,cours,date\nSNTS,44980,2026-10-10\nORAC,21895,2026-10-10\n'], {type: 'text/csv;charset=utf-8;'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'modele_cotations_brvm.csv';
-  a.click();
-}
-
-renderCompanies();
-renderPortfolio();
-loadRemoteQuotes();
+const companies=[['ABJC','SERVAIR ABIDJAN CI','Industrie'],['BICC','BICICI','Services financiers'],['BBGC','BRIDGE BANK GROUP CI','Services financiers'],['BICB','BIIC BENIN','Services financiers'],['BNBC','BERNABE CI','Consommation discrétionnaire'],['BOAB','BOA BENIN','Services financiers'],['BOABF','BOA BURKINA','Services financiers'],['BOAC','BOA CI','Services financiers'],['BOAM','BOA MALI','Services financiers'],['BOAN','BOA NIGER','Services financiers'],['BOAS','BOA SENEGAL','Services financiers'],['CABC','SICABLE','Industrie'],['CBIBF','CORIS BANK BF','Services financiers'],['CFAC','CFAO MOTORS CI','Consommation discrétionnaire'],['CIEC','CIE','Services publics'],['ECOC','ECOBANK CI','Services financiers'],['ETIT','ECOTI','Services financiers'],['FTSC','FILTISAC','Industrie'],['LNBB','LOTERIE BENIN','Consommation discrétionnaire'],['NEIC','NEI-CEDA','Consommation discrétionnaire'],['NSBC','NSIA BANQUE CI','Services financiers'],['NTLC','NESTLE CI','Consommation de base'],['ONTBF','ONATEL BF','Télécommunications'],['ORAC','ORANGE CI','Télécommunications'],['ORGT','ORAGROUP','Services financiers'],['PALC','PALMCI','Consommation de base'],['PRSC','TRACTAFRIC MOTORS','Consommation discrétionnaire'],['SAFC','SICOR','Industrie'],['SCRC','SUCRIVOIRE','Consommation de base'],['SDCC','SODECI','Services publics'],['SDSC','SODE CI','Services publics'],['SEMC','SAFCA','Services financiers'],['SGBC','SG CI','Services financiers'],['SHEC','VIVO ENERGY CI','Énergie'],['SIBC','SIB','Services financiers'],['SICC','SICOR','Consommation de base'],['SIVC','SIVOA','Industrie'],['SLBC','SOLIBRA','Consommation de base'],['SMBC','SMB CI','Énergie'],['SNTS','SONATEL','Télécommunications'],['SOGC','SOGB','Consommation de base'],['SPHC','SAPH','Industrie'],['STAC','SETAO','Industrie'],['STBC','SITAB','Consommation de base'],['TTLC','TOTALENERGIES CI','Énergie'],['TTLS','TOTALENERGIES SN','Énergie'],['UNLC','UNILEVER CI','Consommation de base'],['UNXC','UNIWAX','Industrie'],['TTRC','TRITURAF','Consommation de base'],['SRIC','SARI','Consommation de base'],['SDCC2','SODECI bis','Services publics']];
+const get=(k,d=[])=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let quotes=get('brvm_quotes',{}),holdings=get('brvm_holdings',[]),fundamentals={};
+const fmt=n=>Number(n).toLocaleString('fr-FR',{maximumFractionDigits:2});
+const num=id=>parseFloat(document.getElementById(id).value)||0;
+let priceChart=null,rsiChart=null;
+async function loadFundamentals(){try{const r=await fetch('fundamentals.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('f');const d=await r.json();fundamentals=d.fundamentals||{};}catch(e){console.error(e);}}
+async function loadRemoteQuotes(){try{const response=await fetch('quotes.json?t='+Date.now(),{cache:'no-store'});if(!response.ok)throw new Error('q');const data=await response.json();if(!Array.isArray(data.quotes))throw new Error('fmt');const remote={};data.quotes.forEach(q=>{if(q.symbol&&Number(q.price)>0)remote[q.symbol]={price:Number(q.price),date:data.retrieved_on||'',variation_pct:Number(q.variation_pct)||0};});quotes={...quotes,...remote};set('brvm_quotes',quotes);holdings=holdings.map(h=>remote[h.symbol]?{...h,current:remote[h.symbol].price}:h);set('brvm_holdings',holdings);renderCompanies();renderPortfolio();document.getElementById('lastUpdate').textContent=data.updated_at_utc?new Date(data.updated_at_utc).toLocaleString('fr-FR',{timeZone:'Africa/Abidjan'}):'OK';}catch(e){console.error(e);}}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
+function renderCompanies(){let sectors=[...new Set(companies.map(c=>c[2]))].sort();let sf=document.getElementById('sectorFilter');if(sf.options.length===1)sectors.forEach(s=>sf.add(new Option(s,s)));let q=(document.getElementById('companySearch').value||'').toLowerCase(),sec=sf.value;let list=companies.filter(c=>(!sec||c[2]===sec)&&c.join(' ').toLowerCase().includes(q));document.getElementById('companyList').innerHTML=list.map(c=>{const hasF=!!fundamentals[c[0]];const price=quotes[c[0]]?fmt(quotes[c[0]].price)+' FCFA':'—';const varP=quotes[c[0]]&&quotes[c[0]].variation_pct!=null?` · ${quotes[c[0]].variation_pct>=0?'+':''}${quotes[c[0]].variation_pct}%`:'';return `<div class="company"><div><b>${c[0]}</b> — ${c[1]} ${hasF?'<span class="tag">ratios auto</span>':''}</div><div class="muted">${c[2]} · ${price}${varP}</div><div class="actions"><button class="secondary" onclick="analyzeSymbol('${c[0]}')">Analyser</button></div></div>`;}).join('')||'<p class="muted">Aucun résultat.</p>';document.getElementById('companyCount').textContent=companies.length;document.getElementById('quoteCount').textContent=Object.keys(quotes).length;}
+document.getElementById('companySearch').addEventListener('input',renderCompanies);
+document.getElementById('sectorFilter').addEventListener('change',renderCompanies);
+function analyzeSymbol(s){['fSymbol','tSymbol','pSymbol'].forEach(id=>document.getElementById(id).value=s);if(quotes[s]){document.getElementById('fPrice').value=quotes[s].price;document.getElementById('pCurrent').value=quotes[s].price;}const f=fundamentals[s];if(f){if(f.eps!=null)document.getElementById('fEPS').value=f.eps;if(f.dividend!=null)document.getElementById('fDividend').value=f.dividend;if(f.book!=null)document.getElementById('fBook').value=f.book;if(f.growth!=null)document.getElementById('fGrowth').value=f.growth;}document.querySelector('[data-tab="fundamental"]').click();setTimeout(()=>calcFundamental(),50);}
+function calcFundamental(){const p=num('fPrice'),eps=num('fEPS'),d=num('fDividend'),book=num('fBook');const ro=num('fRevenueOld'),rn=num('fRevenueNew');const po=num('fProfitOld'),pn=num('fProfitNew');const debt=num('fDebt'),eq=num('fEquity');const g=Math.min(15,Math.max(0,num('fGrowth')));const per=(p>0&&eps>0)?p/eps:null,dy=p>0?100*d/p:null,pb=book>0?p/book:null;const rg=ro>0?100*(rn-ro)/ro:null,pg=po!==0?100*(pn-po)/Math.abs(po):null;const roe=eq>0?100*pn/eq:null,lev=eq>0?debt/eq:null;const fv=eps>0?eps*(8+2*g):null,mos=(fv&&p>0)?100*(fv-p)/fv:null;const peg=(per&&pg&&pg>0)?per/pg:null,netMargin=rn>0?100*pn/rn:null;let score=5;if(per!==null){if(per<8)score+=1.5;else if(per<12)score+=1;else if(per>20)score-=1.5;else if(per>15)score-=0.5;}if(dy!==null){if(dy>=5)score+=1;else if(dy>=3)score+=0.5;else if(dy<1)score-=0.5;}if(pb!==null){if(pb<1)score+=1;else if(pb<1.5)score+=0.5;else if(pb>3)score-=1;}if(roe!==null){if(roe>=15)score+=1;else if(roe>=10)score+=0.5;else if(roe<5)score-=1;}if(mos!==null){if(mos>=20)score+=1;else if(mos>=10)score+=0.5;else if(mos<0)score-=1;}score=Math.max(0,Math.min(10,Math.round(score*10)/10));let label='Neutre',cls='score-neutre';if(score>=7){label='Attractif';cls='score-attractif';}else if(score<=4){label='Cher / Prudence';cls='score-cher';}document.getElementById('fundamentalScore').className='score-box '+cls;document.getElementById('fundamentalScore').innerHTML=`<div class="score">${score}/10</div><div class="label">${label}</div>`;document.getElementById('fundamentalScore').classList.remove('hidden');const arr=[['PER',per?fmt(per)+'x':'—'],['PEG',peg?fmt(peg)+'x':'—'],['Rendement dividende',dy!==null?fmt(dy)+' %':'—'],['Prix / Valeur comptable',pb?fmt(pb)+'x':'—'],['Marge nette',netMargin!==null?fmt(netMargin)+' %':'—'],['Croissance CA',rg!==null?fmt(rg)+' %':'—'],['Croissance bénéfice',pg!==null?fmt(pg)+' %':'—'],['ROE',roe!==null?fmt(roe)+' %':'—'],['Dettes / Capitaux propres',lev!==null?fmt(lev)+'x':'—'],['Valeur estimative',fv?fmt(fv)+' FCFA':'—'],['Marge de sécurité',mos!==null?fmt(mos)+' %':'—']];document.getElementById('fundamentalResults').innerHTML=arr.map(a=>`<div class="metric"><span>${a[0]}</span><strong>${a[1]}</strong></div>`).join('');let msg='Ratios calculés automatiquement. Vérifie toujours avec les rapports officiels. ';if(per&&per>20)msg+='PER élevé. ';else if(per&&per<8)msg+='PER bas (possible sous-valorisation). ';if(dy&&dy>=5)msg+='Rendement dividende attractif. ';msg+='Ceci n\'est pas une recommandation d\'achat.';document.getElementById('fundamentalComment').textContent=msg;document.getElementById('fundamentalComment').classList.remove('hidden');}
+function clearFundamental(){document.querySelectorAll('#fundamental input').forEach(x=>x.value='');document.getElementById('fGrowth').value=5;document.getElementById('fundamentalResults').innerHTML='';document.getElementById('fundamentalScore').classList.add('hidden');document.getElementById('fundamentalComment').classList.add('hidden');}
+function sma(arr,n){if(arr.length<n)return null;return arr.slice(-n).reduce((a,b)=>a+b,0)/n;}
+function calcRSI(vals,period=14){if(vals.length<period+1)return null;let gains=0,losses=0;for(let i=vals.length-period;i<vals.length;i++){const d=vals[i]-vals[i-1];if(d>0)gains+=d;else losses-=d;}if(losses===0)return 100;const rs=(gains/period)/(losses/period);return 100-100/(1+rs);}
+function calcBollinger(vals,n=20,k=2){if(vals.length<n)return null;const slice=vals.slice(-n);const mean=slice.reduce((a,b)=>a+b,0)/n;const std=Math.sqrt(slice.reduce((a,b)=>a+(b-mean)**2,0)/n);return{mid:mean,upper:mean+k*std,lower:mean-k*std};}
+function calcMACD(vals){if(vals.length<26)return null;const ema=(data,period)=>{const k=2/(period+1);let e=data[0];for(let i=1;i<data.length;i++)e=data[i]*k+e*(1-k);return e;};return ema(vals.slice(-26),12)-ema(vals.slice(-26),26);}
+function calcStochastic(vals,period=14){if(vals.length<period)return null;const slice=vals.slice(-period);const high=Math.max(...slice),low=Math.min(...slice);if(high===low)return 50;return 100*(vals[vals.length-1]-low)/(high-low);}
+function calcTechnical(){const raw=document.getElementById('tPrices').value;const vals=(raw.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(x=>parseFloat(x.replace(',','.'))).filter(Number.isFinite);if(vals.length<5){document.getElementById('technicalComment').textContent='Ajoute au moins 5 clôtures.';document.getElementById('technicalComment').classList.remove('hidden');return;}const last=vals[vals.length-1],rsi=calcRSI(vals),ma5=sma(vals,5),ma20=sma(vals,20),ma50=sma(vals,50),bb=calcBollinger(vals),macd=calcMACD(vals),stoch=calcStochastic(vals);let tScore=5;if(rsi!==null){if(rsi>=30&&rsi<=50)tScore+=1;else if(rsi<30)tScore+=0.5;else if(rsi>70)tScore-=1.5;}if(ma20!==null&&last>ma20)tScore+=1;else if(ma20!==null)tScore-=0.5;if(bb){if(last<bb.lower)tScore+=0.5;if(last>bb.upper)tScore-=1;}tScore=Math.max(0,Math.min(10,Math.round(tScore*10)/10));let tLabel='Neutre',tCls='score-neutre';if(tScore>=7){tLabel='Tendance favorable';tCls='score-attractif';}else if(tScore<=4){tLabel='Prudence';tCls='score-cher';}document.getElementById('technicalScore').className='score-box '+tCls;document.getElementById('technicalScore').innerHTML=`<div class="score">${tScore}/10</div><div class="label">${tLabel}</div>`;document.getElementById('technicalScore').classList.remove('hidden');document.getElementById('technicalResults').innerHTML=[['Dernière clôture',fmt(last)+' FCFA'],['RSI (14)',rsi!==null?fmt(rsi):'—'],['Stochastic',stoch!==null?fmt(stoch):'—'],['MACD',macd!==null?fmt(macd):'—'],['MM 5',ma5!==null?fmt(ma5):'—'],['MM 20',ma20!==null?fmt(ma20):'—'],['MM 50',ma50!==null?fmt(ma50):'—'],['BB haut',bb?fmt(bb.upper):'—'],['BB bas',bb?fmt(bb.lower):'—'],['Nb clôtures',vals.length]].map(a=>`<div class="metric"><span>${a[0]}</span><strong style="font-size:16px">${a[1]}</strong></div>`).join('');const labels=vals.map((_,i)=>i+1);if(priceChart)priceChart.destroy();if(rsiChart)rsiChart.destroy();const datasets=[{label:'Cours',data:vals,borderColor:'#1d5d91',backgroundColor:'rgba(29,93,145,0.08)',fill:true,tension:0.2,pointRadius:0}];if(ma20){datasets.push({label:'MM20',data:vals.map((_,i)=>i>=19?sma(vals.slice(0,i+1),20):null),borderColor:'#e6ad3c',borderWidth:1.5,pointRadius:0,tension:0.2});}priceChart=new Chart(document.getElementById('priceChart'),{type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{x:{display:false},y:{ticks:{font:{size:11}}}}}});const rsiArr=vals.map((_,i)=>i<14?null:calcRSI(vals.slice(0,i+1)));rsiChart=new Chart(document.getElementById('rsiChart'),{type:'line',data:{labels,datasets:[{label:'RSI',data:rsiArr,borderColor:'#7c3aed',borderWidth:1.5,pointRadius:0,tension:0.2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{min:0,max:100,ticks:{font:{size:10}}}}}});let msg=rsi!==null?(rsi>=70?'RSI surachat. ':rsi<=30?'RSI survente. ':'RSI intermédiaire. '):'';msg+='Confirme avec fondamentaux.';document.getElementById('technicalComment').textContent=msg;document.getElementById('technicalComment').classList.remove('hidden');}
+function addHolding(){const symbol=(document.getElementById('pSymbol').value||'').toUpperCase().trim();const qty=num('pQty'),cost=num('pCost');let current=num('pCurrent');if(!symbol||qty<=0||cost<=0)return alert('Remplis les champs.');if(!current&&quotes[symbol])current=quotes[symbol].price;const idx=holdings.findIndex(h=>h.symbol===symbol);if(idx>=0)holdings[idx]={symbol,qty,cost,current};else holdings.push({symbol,qty,cost,current});set('brvm_holdings',holdings);renderPortfolio();}
+function renderPortfolio(){let total=0;document.getElementById('portfolioRows').innerHTML=holdings.map((h,i)=>{const c=h.current||quotes[h.symbol]?.price||0;const v=h.qty*c,pnl=h.qty*(c-h.cost);total+=v;return `<tr><td><b>${h.symbol}</b></td><td>${fmt(h.qty)}</td><td>${fmt(h.cost)}</td><td>${c?fmt(c):'—'}</td><td>${fmt(v)}</td><td class="${pnl>=0?'good':'bad'}">${fmt(pnl)}</td><td><button class="secondary" onclick="removeHolding(${i})">×</button></td></tr>`;}).join('');document.getElementById('portfolioValue').textContent=fmt(total)+' FCFA';}
+function removeHolding(i){holdings.splice(i,1);set('brvm_holdings',holdings);renderPortfolio();}
+function exportPortfolio(){const rows=[['symbole','quantite','prix_moyen','cours'],...holdings.map(h=>[h.symbol,h.qty,h.cost,h.current||quotes[h.symbol]?.price||''])];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}));a.download='portefeuille_brvm.csv';a.click();}
+function importCSV(){const f=document.getElementById('csvFile').files[0];if(!f){showImport('Choisis un CSV.');return;}const reader=new FileReader();reader.onload=()=>{const lines=String(reader.result).split(/\r?\n/).filter(x=>x.trim());let n=0;for(let i=0;i<lines.length;i++){const a=lines[i].split(/[;,\t]/).map(x=>x.trim());if(i===0&&/symbole|symbol/i.test(a[0]))continue;if(a.length<2)continue;const s=a[0].toUpperCase(),price=parseFloat((a[1]||'').replace(/\s/g,'').replace(',','.'));if(s&&price>0){quotes[s]={price,date:a[2]||new Date().toISOString().slice(0,10)};n++;}}set('brvm_quotes',quotes);renderCompanies();renderPortfolio();showImport(n+' cours importés.');};reader.readAsText(f);}
+function showImport(m){const e=document.getElementById('importMessage');e.textContent=m;e.classList.remove('hidden');}
+function clearQuotes(){if(confirm('Effacer les cours ?')){quotes={};set('brvm_quotes',quotes);renderCompanies();renderPortfolio();showImport('Effacé.');}}
+function downloadTemplate(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['symbole,cours,date\nSNTS,44980,2026-10-10\n'],{type:'text/csv'}));a.download='modele.csv';a.click();}
+renderCompanies();renderPortfolio();loadRemoteQuotes();loadFundamentals().then(()=>renderCompanies());
 </script>
 </body>
 </html>
