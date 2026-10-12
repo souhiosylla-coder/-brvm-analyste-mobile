@@ -2,15 +2,21 @@ name: Mise à jour des cotations BRVM
 
 on:
   schedule:
+    # Toutes les heures 8h–16h UTC, lun–ven (marché BRVM)
     - cron: "5 8-16 * * 1-5"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-quotes
+  cancel-in-progress: true
+
 jobs:
   update-quotes:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
@@ -24,9 +30,7 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Tests formules financières
-        run: |
-          python scripts/test_formulas.py
-          echo "Tests formules OK"
+        run: python scripts/test_formulas.py
 
       - name: Backup quotes + fundamentals
         run: |
@@ -35,6 +39,7 @@ jobs:
 
       - name: Sync BloomAfrik (48 titres)
         id: sync
+        timeout-minutes: 3
         run: |
           set -e
           python scripts/sync_bloomafrik.py
@@ -42,12 +47,14 @@ jobs:
 
       - name: Fallback scraper BRVM si BloomAfrik échoue
         if: failure() && steps.sync.outcome == 'failure'
+        timeout-minutes: 3
         run: |
           echo "BloomAfrik a échoué — fallback scraper BRVM"
           python scripts/update_quotes.py
 
       - name: Historique clôtures (graphiques techniques)
-        run: python scripts/update_history.py || true
+        timeout-minutes: 1
+        run: python scripts/update_history.py
 
       - name: Valider les fichiers produits
         run: |
@@ -66,29 +73,21 @@ jobs:
           if not fpath.exists():
               fail("fundamentals.json absent")
 
-          try:
-              q = json.loads(qpath.read_text(encoding="utf-8"))
-          except json.JSONDecodeError as e:
-              fail(f"quotes.json JSON invalide: {e}")
-
-          try:
-              f = json.loads(fpath.read_text(encoding="utf-8"))
-          except json.JSONDecodeError as e:
-              fail(f"fundamentals.json JSON invalide: {e}")
+          q = json.loads(qpath.read_text(encoding="utf-8"))
+          f = json.loads(fpath.read_text(encoding="utf-8"))
 
           quotes = q.get("quotes") or []
           if not isinstance(quotes, list) or len(quotes) < 10:
               fail(f"trop peu de cotations: {len(quotes)}")
 
           for item in quotes:
-              sym = item.get("symbol")
-              px = item.get("price")
+              sym, px = item.get("symbol"), item.get("price")
               if not sym or not isinstance(px, (int, float)) or px <= 0:
                   fail(f"cotation invalide: {item}")
 
           funds = f.get("fundamentals")
           if not isinstance(funds, dict) or len(funds) < 10:
-              fail(f"fondamentaux insuffisants: {type(funds)} n={len(funds) if isinstance(funds, dict) else 0}")
+              fail(f"fondamentaux insuffisants: {len(funds) if isinstance(funds, dict) else 0}")
 
           bak = Path("quotes.json.bak")
           if bak.exists():
@@ -100,8 +99,7 @@ jobs:
               except Exception:
                   pass
 
-          seance = q.get("retrieved_on")
-          print(f"Validation OK: {len(quotes)} cotations, {len(funds)} fondamentaux, séance={seance}, source={q.get('source')}")
+          print(f"Validation OK: {len(quotes)} cotations, {len(funds)} fondamentaux, séance={q.get('retrieved_on')}, source={q.get('source')}")
           PY
 
       - name: Commit et push
@@ -109,5 +107,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add quotes.json fundamentals.json history.json
-          git diff --cached --quiet || git commit -m "Mise à jour BloomAfrik (cotations + fondamentaux + historique)"
+          git diff --cached --quiet || git commit -m "Mise à jour auto BRVM (cotations + fondamentaux + historique)"
           git push
