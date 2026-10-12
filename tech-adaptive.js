@@ -1,0 +1,27 @@
+/* Adaptive tech for short histories */
+(function(){
+function rA(v,p){p=p||Math.min(14,Math.max(5,v.length-1));if(v.length<p+1)return null;let g=[],l=[];for(let i=1;i<v.length;i++){const d=v[i]-v[i-1];g.push(d>0?d:0);l.push(d<0?-d:0);}let aG=g.slice(0,p).reduce((a,b)=>a+b,0)/p,aL=l.slice(0,p).reduce((a,b)=>a+b,0)/p;for(let i=p;i<g.length;i++){aG=(aG*(p-1)+g[i])/p;aL=(aL*(p-1)+l[i])/p;}return aL===0?100:100-100/(1+aG/aL);}
+function sN(v,n){return v.length<n?null:v.slice(-n).reduce((a,b)=>a+b,0)/n;}
+window.calcTechnical=function(){
+const vals=(document.getElementById('tPrices').value.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(x=>parseFloat(x.replace(',','.'))).filter(Number.isFinite);
+if(vals.length<5){const c=document.getElementById('technicalComment');if(c){c.textContent='Min. 5 clôtures.';c.classList.remove('hidden');}return;}
+const last=vals.at(-1),rp=Math.min(14,Math.max(5,vals.length-1)),rsi=rA(vals,rp),ma5=sN(vals,5),mn=Math.min(20,Math.max(5,Math.floor(vals.length*.6))),maN=sN(vals,mn),ma20=sN(vals,20);
+const mom=vals.length>=6?100*(last-vals[vals.length-6])/vals[vals.length-6]:null;
+let macd=null;if(vals.length>=12&&typeof emaSeries==='function'){const ef=emaSeries(vals,Math.min(12,Math.floor(vals.length/2))),es=emaSeries(vals,Math.min(26,vals.length-1)),ln=ef.map((v,i)=>v-es[i]),sg=emaSeries(ln,Math.min(9,Math.max(3,Math.floor(ln.length/3)))),i=ln.length-1;macd={macd:ln[i],signal:sg[i],hist:ln[i]-sg[i]};}
+else if(typeof calcMACD==='function')macd=calcMACD(vals);
+let sc=0,cr=0;if(rsi!=null){cr++;sc+=rsi>=30&&rsi<=50?2:rsi<30?1.5:rsi<=70?1:.3;}if(ma5!=null){cr++;sc+=last>ma5?2:.5;}if(maN!=null){cr++;sc+=last>maN?1.5:.5;}if(macd){cr++;sc+=macd.hist>0?1.5:.5;}if(mom!=null){cr++;sc+=mom>0?1:mom>-3?.5:.2;}
+const s10=cr?Math.max(0,Math.min(10,Math.round((sc/Math.max(cr,1))*5*10)/10)):null;
+let lab='Données insuffisantes',cls='score-neutre';if(s10!=null){if(s10>=7){lab='Favorable';cls='score-attractif';}else if(s10<=4){lab='Prudence';cls='score-cher';}else{lab='Neutre';cls='score-neutre';}}
+const box=document.getElementById('technicalScore');box.className='score-box '+cls;box.innerHTML=s10==null?'<div class="score">—/10</div><div class="label">'+lab+'</div>':'<div class="score">'+s10+'/10</div><div class="label">'+lab+' \u00b7 '+vals.length+' s\u00e9ances \u00b7 RSI'+rp+'</div>';box.classList.remove('hidden');
+const f=typeof fmt==='function'?fmt:n=>Number(n).toLocaleString('fr-FR',{maximumFractionDigits:2});
+document.getElementById('technicalResults').innerHTML=[['Cl\u00f4ture',f(last)],['RSI('+rp+')',rsi!=null?f(rsi):'\u2014'],['Mom. 5j',mom!=null?((mom>0?'+':'')+f(mom)+'%'):'\u2014'],['MACD',macd?f(macd.macd):'\u2014'],['Signal',macd?f(macd.signal):'\u2014'],['Hist.',macd?f(macd.hist):'\u2014'],['MM5',ma5!=null?f(ma5):'\u2014'],['MM'+mn,maN!=null?f(maN):'\u2014'],['MM20',ma20!=null?f(ma20):'\u2014']].map(a=>'<div class="metric"><span>'+a[0]+'</span><strong>'+a[1]+'</strong></div>').join('');
+if(typeof Chart!=='undefined'){try{if(typeof priceChart!=='undefined'&&priceChart)priceChart.destroy();if(typeof rsiChart!=='undefined'&&rsiChart)rsiChart.destroy();if(typeof macdChart!=='undefined'&&macdChart)macdChart.destroy();
+const labels=vals.map((_,i)=>i+1),roll=n=>vals.map((_,i)=>i<n-1?null:vals.slice(i-n+1,i+1).reduce((a,b)=>a+b,0)/n);
+window.priceChart=new Chart(document.getElementById('priceChart'),{type:'line',data:{labels,datasets:[{label:'Cours',data:vals,borderColor:'#1d5d91',tension:.2,pointRadius:2,borderWidth:2},{label:'MM5',data:roll(5),borderColor:'#22c55e',pointRadius:0,borderWidth:1.2,borderDash:[4,3]},{label:'MM',data:roll(mn),borderColor:'#e6ad3c',pointRadius:0,borderWidth:1.2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},scales:{x:{display:false}}}});
+const rs=vals.map((_,i)=>i<rp?null:rA(vals.slice(0,i+1),rp));
+window.rsiChart=new Chart(document.getElementById('rsiChart'),{type:'line',data:{labels,datasets:[{label:'RSI',data:rs,borderColor:'#7c3aed',pointRadius:0,borderWidth:2},{label:'70',data:vals.map(()=>70),borderColor:'rgba(239,68,68,.4)',pointRadius:0,borderDash:[4,4],borderWidth:1},{label:'30',data:vals.map(()=>30),borderColor:'rgba(34,197,94,.4)',pointRadius:0,borderDash:[4,4],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},scales:{x:{display:false},y:{min:0,max:100}}}});
+if(macd&&typeof emaSeries==='function'){const e12=emaSeries(vals,Math.min(12,Math.floor(vals.length/2))),e26=emaSeries(vals,Math.min(26,vals.length-1)),ml=e12.map((v,i)=>v-e26[i]),sl=emaSeries(ml,Math.min(9,Math.max(3,Math.floor(ml.length/3))));
+window.macdChart=new Chart(document.getElementById('macdChart'),{type:'bar',data:{labels,datasets:[{type:'bar',label:'Hist.',data:ml.map((v,i)=>v-sl[i]),backgroundColor:ml.map((v,i)=>(v-sl[i])>=0?'rgba(19,117,71,.55)':'rgba(179,58,58,.55)')},{type:'line',label:'MACD',data:ml,borderColor:'#1d5d91',pointRadius:0,borderWidth:2},{type:'line',label:'Signal',data:sl,borderColor:'#e6ad3c',pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},scales:{x:{display:false}}}});}}catch(e){console.error(e);}}
+const c=document.getElementById('technicalComment');if(c){c.textContent=(rsi!=null?(rsi>=70?'Zone de surachat possible. ':rsi<=30?'Zone de survente possible. ':'Zone neutre. '):'')+'RSI adaptatif ('+rp+') \u00b7 historique court. Indicatif, pas un conseil.';c.classList.remove('hidden');}
+};
+})();
