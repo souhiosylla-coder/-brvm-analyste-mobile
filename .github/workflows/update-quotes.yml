@@ -46,6 +46,9 @@ jobs:
           echo "BloomAfrik a échoué — fallback scraper BRVM"
           python scripts/update_quotes.py
 
+      - name: Historique clôtures (graphiques techniques)
+        run: python scripts/update_history.py || true
+
       - name: Valider les fichiers produits
         run: |
           python3 << 'PY'
@@ -105,6 +108,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add quotes.json fundamentals.json
-          git diff --cached --quiet || git commit -m "Mise à jour BloomAfrik (cotations + fondamentaux)"
+          git add quotes.json fundamentals.json history.json
+          git diff --cached --quiet || git commit -m "Mise à jour BloomAfrik (cotations + fondamentaux + historique)"
           git push
