@@ -23,28 +23,82 @@ jobs:
       - name: Installer les dépendances
         run: pip install requests beautifulsoup4
 
+      - name: Tests formules financières
+        run: |
+          python scripts/test_formulas.py
+          echo "Tests formules OK"
+
       - name: Backup quotes + fundamentals
         run: |
           [ -f quotes.json ] && cp quotes.json quotes.json.bak || true
           [ -f fundamentals.json ] && cp fundamentals.json fundamentals.json.bak || true
 
       - name: Sync BloomAfrik (48 titres)
-        run: python scripts/sync_bloomafrik.py
+        id: sync
+        run: |
+          set -e
+          python scripts/sync_bloomafrik.py
+          echo "Sync BloomAfrik terminé"
 
       - name: Fallback scraper BRVM si BloomAfrik échoue
-        if: failure()
-        run: python scripts/update_quotes.py
+        if: failure() && steps.sync.outcome == 'failure'
+        run: |
+          echo "BloomAfrik a échoué — fallback scraper BRVM"
+          python scripts/update_quotes.py
 
-      - name: Valider les fichiers
+      - name: Valider les fichiers produits
         run: |
           python3 << 'PY'
           import json, sys
           from pathlib import Path
-          q = json.loads(Path("quotes.json").read_text(encoding="utf-8"))
-          assert len(q.get("quotes") or []) >= 10
-          f = json.loads(Path("fundamentals.json").read_text(encoding="utf-8"))
-          assert isinstance(f.get("fundamentals"), dict) and len(f["fundamentals"]) >= 10
-          print("OK", len(q["quotes"]), "quotes,", len(f["fundamentals"]), "fundamentals")
+
+          def fail(msg):
+              print("ERREUR VALIDATION:", msg)
+              sys.exit(1)
+
+          qpath = Path("quotes.json")
+          fpath = Path("fundamentals.json")
+          if not qpath.exists():
+              fail("quotes.json absent")
+          if not fpath.exists():
+              fail("fundamentals.json absent")
+
+          try:
+              q = json.loads(qpath.read_text(encoding="utf-8"))
+          except json.JSONDecodeError as e:
+              fail(f"quotes.json JSON invalide: {e}")
+
+          try:
+              f = json.loads(fpath.read_text(encoding="utf-8"))
+          except json.JSONDecodeError as e:
+              fail(f"fundamentals.json JSON invalide: {e}")
+
+          quotes = q.get("quotes") or []
+          if not isinstance(quotes, list) or len(quotes) < 10:
+              fail(f"trop peu de cotations: {len(quotes)}")
+
+          for item in quotes:
+              sym = item.get("symbol")
+              px = item.get("price")
+              if not sym or not isinstance(px, (int, float)) or px <= 0:
+                  fail(f"cotation invalide: {item}")
+
+          funds = f.get("fundamentals")
+          if not isinstance(funds, dict) or len(funds) < 10:
+              fail(f"fondamentaux insuffisants: {type(funds)} n={len(funds) if isinstance(funds, dict) else 0}")
+
+          bak = Path("quotes.json.bak")
+          if bak.exists():
+              try:
+                  old = json.loads(bak.read_text(encoding="utf-8"))
+                  old_n = len(old.get("quotes") or [])
+                  if old_n >= 20 and len(quotes) < int(old_n * 0.7):
+                      fail(f"régression cotations: {old_n} -> {len(quotes)}")
+              except Exception:
+                  pass
+
+          seance = q.get("retrieved_on")
+          print(f"Validation OK: {len(quotes)} cotations, {len(funds)} fondamentaux, séance={seance}, source={q.get('source')}")
           PY
 
       - name: Commit et push
