@@ -92,6 +92,18 @@ th,td{padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:l
 <section id="data" class="screen"><div class="card"><h2>Qualité des données</h2><p class="muted">Séance boursière, source et couverture des 48 titres.</p><div id="dataQuality"><p class="muted">Chargement…</p></div><div class="actions"><button class="secondary" onclick="renderDataQuality()">Actualiser le diagnostic</button></div></div><div class="card"><h2>Import & sauvegarde</h2><p class="muted">quotes.json + fundamentals.json · backup portefeuille local</p><input id="csvFile" type="file" accept=".csv,.json"><div class="actions"><button onclick="importCSV()">Import CSV cours</button><button class="secondary" onclick="downloadTemplate()">Modèle CSV</button><button class="secondary" onclick="exportBackup()">Backup JSON</button><button class="secondary" onclick="importBackupTriggered()">Restaurer backup</button><button class="danger" onclick="clearQuotes()">Effacer cours locaux</button></div><div id="importMessage" class="notice hidden"></div></div></section>
 <div class="foot">Données différées BRVM — analyses indicatives — pas un conseil d'investissement.</div>
 </main>
-<script src="app.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
+  caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
+}
+</script>
+<script src="app.p1.js?v=4"></script>
+<script src="app.p2.js?v=4"></script>
+<script>
+setTimeout(function(){
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+},4000);
+</script>
 </body>
 </html>
