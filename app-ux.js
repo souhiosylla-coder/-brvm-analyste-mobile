@@ -1,4 +1,4 @@
-/* BRVM UX v2 — fiche, watchlist, alertes, marché Fund/Tech */
+/* BRVM UX v3 — fiche société enrichie, watchlist, alertes */
 (function(){
   const WKEY='brvm_watchlist', AKEY='brvm_alert_threshold';
   function getW(){try{return JSON.parse(localStorage.getItem(WKEY))||[];}catch(e){return [];}}
@@ -134,64 +134,186 @@
     if(btn) btn.click();
     renderSheet(sym);
   };
+
+  function sheetFmt(n,d){
+    if(n==null||n===''||Number.isNaN(Number(n))) return '\u2014';
+    d=d==null?2:d;
+    return Number(n).toLocaleString('fr-FR',{maximumFractionDigits:d,minimumFractionDigits:0});
+  }
+  function sheetMoney(n){
+    if(n==null||Number.isNaN(Number(n))) return '\u2014';
+    const v=Number(n);
+    if(Math.abs(v)>=1e9) return sheetFmt(v/1e9,2)+' Mds';
+    if(Math.abs(v)>=1e6) return sheetFmt(v/1e6,1)+' M';
+    return sheetFmt(v,0);
+  }
+  function sheetMetric(label, value, hint){
+    return `<div class="metric"><span>${label}</span><strong>${value}</strong>${hint?`<span style="font-size:.7rem;opacity:.75">${hint}</span>`:''}</div>`;
+  }
+  function sheetMissingBanner(f,q){
+    const miss=[];
+    if(!q||q.price==null) miss.push('cours');
+    if(f.eps==null&&f.per_ref==null) miss.push('BPA / PER');
+    if(f.dividend==null&&f.yield_ref==null) miss.push('dividende');
+    if(f.book==null&&f.pb==null) miss.push('book / P/B');
+    if(f.revenueNew==null&&!f.real_ca) miss.push('chiffre d\'affaires');
+    if(f.profitNew==null) miss.push('r\u00e9sultat net');
+    if(f.debt==null&&f.total_liabilities==null) miss.push('dettes');
+    if(f.equity==null) miss.push('capitaux propres');
+    if(!miss.length) return '';
+    return `<div class="notice" style="margin-top:10px;background:rgba(234,179,8,.12);border-color:rgba(234,179,8,.35)">
+      <b>Donn\u00e9es manquantes :</b> ${miss.join(', ')}. Les ratios concern\u00e9s affichent \u00ab \u2014 \u00bb.
+    </div>`;
+  }
+
   window.renderSheet=function(sym){
     sym=(sym||window._sheetSym||'').toUpperCase();
     const box=document.getElementById('sheetBody');
     if(!box||!sym)return;
-    const q=quotes&&quotes[sym];
-    const f=(fundamentals&&fundamentals[sym])||{};
-    const v=q&&q.variation_pct;
-    const vTxt=v==null?'\u2014':((v>0?'+':'')+fnum(v)+'%');
+
+    const q=(typeof quotes!=='undefined'&&quotes[sym])||null;
+    const f=((typeof fundamentals!=='undefined'&&fundamentals[sym])||{});
+    const name=nameOf(sym);
+    const sector=sectorOf(sym);
     const star=isWatched(sym)?'\u2605 Retirer':'\u2606 Favori';
-    const per=q&&f.eps>0?(q.price/f.eps):f.per_ref;
-    const dy=q&&f.dividend!=null?(100*f.dividend/q.price):f.yield_ref;
-    const pb=q&&f.book>0?(q.price/f.book):f.pb;
+
+    const price=q&&q.price!=null?Number(q.price):null;
+    const varp=q&&q.variation_pct!=null?Number(q.variation_pct):null;
+    const vCls=varp>0?'up':(varp<0?'down':'flat');
+    const vTxt=varp==null?'\u2014':((varp>0?'+':'')+sheetFmt(varp,2)+'%');
+
+    const per=(price!=null&&f.eps>0)?(price/f.eps):(f.per_ref!=null?f.per_ref:null);
+    const dy=(price!=null&&f.dividend!=null&&price>0)?(100*f.dividend/price):(f.yield_ref!=null?f.yield_ref:null);
+    const pb=(price!=null&&f.book>0)?(price/f.book):(f.pb!=null?f.pb:null);
+    const roe=f.roe!=null?f.roe:((f.profitNew!=null&&f.equity>0)?(100*f.profitNew/f.equity):null);
+    const debt=f.debt!=null?f.debt:f.total_liabilities;
+    const de=(debt!=null&&f.equity>0)?(debt/f.equity):null;
+
+    let histN=0;
+    try{
+      if(typeof priceHistory!=='undefined'&&priceHistory[sym]) histN=(priceHistory[sym]||[]).length;
+      else if(typeof closesOf==='function') histN=(closesOf(sym)||[]).length;
+    }catch(e){}
+
+    const src=f.source||'Sources : BloomAfrik / cotations diff\u00e9r\u00e9es BRVM';
+    const seance=(typeof quotesMeta!=='undefined'&&quotesMeta&&quotesMeta.retrieved_on)||(q&&q.date)||'\u2014';
+
     box.innerHTML=`
-      <h2 style="margin:0 0 4px">${sym} \u2014 ${nameOf(sym)}</h2>
-      <p class="muted" style="margin:0 0 10px">${sectorOf(sym)}</p>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
+        <div>
+          <h2 style="margin:0 0 2px;font-size:1.15rem">${sym}</h2>
+          <p style="margin:0;font-size:.92rem">${name}</p>
+          <p class="muted" style="margin:2px 0 0">${sector}</p>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.25rem;font-weight:700">${price!=null?sheetFmt(price,0)+' <span style="font-size:.75rem;font-weight:500">FCFA</span>':'\u2014'}</div>
+          <div class="quote-var ${vCls}" style="font-size:.95rem">${vTxt}</div>
+          <div class="muted" style="font-size:.72rem">S\u00e9ance ${seance}</div>
+        </div>
+      </div>
+
+      ${sheetMissingBanner(f,q)}
+
+      <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Valorisation</p>
       <div class="row">
-        <div class="metric"><span>Cours</span><strong>${q?fnum(q.price)+' FCFA':'\u2014'}</strong></div>
-        <div class="metric"><span>Variation</span><strong class="quote-var ${v>0?'up':(v<0?'down':'flat')}">${vTxt}</strong></div>
+        ${sheetMetric('PER', per!=null?sheetFmt(per,2)+'x':'\u2014', f.eps!=null?'via BPA':'r\u00e9f. march\u00e9')}
+        ${sheetMetric('Rendement', dy!=null?sheetFmt(dy,2)+'%':'\u2014', f.dividend!=null?'div./cours':'r\u00e9f. march\u00e9')}
       </div>
       <div class="row" style="margin-top:8px">
-        <div class="metric"><span>PER</span><strong>${per!=null?fnum(per)+'x':'\u2014'}</strong></div>
-        <div class="metric"><span>Rendement</span><strong>${dy!=null?fnum(dy)+'%':'\u2014'}</strong></div>
+        ${sheetMetric('P/B', pb!=null?sheetFmt(pb,2)+'x':'\u2014', f.book!=null?'cours/book':'r\u00e9f.')}
+        ${sheetMetric('ROE', roe!=null?sheetFmt(roe,2)+'%':'\u2014', 'r\u00e9sultat / CP')}
+      </div>
+
+      <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Donn\u00e9es par action</p>
+      <div class="row">
+        ${sheetMetric('BPA', f.eps!=null?sheetFmt(f.eps,2):'\u2014','FCFA')}
+        ${sheetMetric('Dividende', f.dividend!=null?sheetFmt(f.dividend,2):'\u2014','FCFA')}
       </div>
       <div class="row" style="margin-top:8px">
-        <div class="metric"><span>P/B</span><strong>${pb!=null?fnum(pb)+'x':'\u2014'}</strong></div>
-        <div class="metric"><span>ROE</span><strong>${f.roe!=null?fnum(f.roe)+'%':'\u2014'}</strong></div>
+        ${sheetMetric('Book value', f.book!=null?sheetFmt(f.book,2):'\u2014','FCFA')}
+        ${sheetMetric('Capitalisation', f.market_cap_mds!=null?sheetFmt(f.market_cap_mds,1)+' Mds':'\u2014','FCFA')}
+      </div>
+
+      <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Comptes (si disponibles)</p>
+      <div class="row">
+        ${sheetMetric('CA / PNB N', sheetMoney(f.revenueNew), f.real_ca?'source officielle':'')}
+        ${sheetMetric('R\u00e9sultat net N', sheetMoney(f.profitNew),'')}
       </div>
       <div class="row" style="margin-top:8px">
-        <div class="metric"><span>BPA</span><strong>${f.eps!=null?fnum(f.eps):'\u2014'}</strong></div>
-        <div class="metric"><span>Dividende</span><strong>${f.dividend!=null?fnum(f.dividend):'\u2014'}</strong></div>
+        ${sheetMetric('CA N-1', sheetMoney(f.revenueOld),'')}
+        ${sheetMetric('R\u00e9sultat N-1', sheetMoney(f.profitOld),'')}
       </div>
       <div class="row" style="margin-top:8px">
-        <div class="metric"><span>Capi. (Mds)</span><strong>${f.market_cap_mds!=null?f.market_cap_mds:'\u2014'}</strong></div>
-        <div class="metric"><span>Book</span><strong>${f.book!=null?fnum(f.book):'\u2014'}</strong></div>
+        ${sheetMetric('Dettes', sheetMoney(debt),'')}
+        ${sheetMetric('Capitaux propres', sheetMoney(f.equity),'')}
       </div>
-      <p class="muted" style="margin-top:10px">${f.source||'Sources : BloomAfrik / cotations diff\u00e9r\u00e9es'}</p>
-      <div class="actions">
-        <button onclick="analyzeSymbol('${sym}')">Fondamental</button>
-        <button class="secondary" onclick="analyzeSymbol('${sym}',{tab:'technical'})">Technique</button>
-        <button class="secondary" onclick="toggleWatch('${sym}');renderSheet('${sym}')">${star}</button>
-        <button class="secondary" onclick="document.getElementById('pSymbol').value='${sym}';document.querySelector('[data-tab=portfolio]').click()">Portefeuille</button>
+      <div class="row" style="margin-top:8px">
+        ${sheetMetric('D/E', de!=null?sheetFmt(de,2)+'x':'\u2014','dettes/CP')}
+        ${sheetMetric('Croissance (r\u00e9f.)', f.growth!=null?sheetFmt(f.growth,1)+'%':'\u2014','valo')}
       </div>
-      <p class="muted" style="margin-top:12px">Graphique technique</p>
+
+      <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Tendance (${histN} point${histN>1?'s':''})</p>
       <div class="chart-wrap" style="height:200px"><canvas id="sheetChart"></canvas></div>
+      <p class="muted" style="font-size:.72rem;margin-top:-6px">${histN<5?'Historique court \u2014 indicateurs techniques limit\u00e9s.':'Historique suffisant pour une lecture technique de base.'}</p>
+
+      <div class="actions" style="margin-top:12px">
+        <button type="button" onclick="analyzeSymbol('${sym}')">Fondamental</button>
+        <button type="button" class="secondary" onclick="analyzeSymbol('${sym}',{tab:'technical'})">Technique</button>
+        <button type="button" class="secondary" onclick="toggleWatch('${sym}');renderSheet('${sym}')">${star}</button>
+        <button type="button" class="secondary" onclick="document.getElementById('pSymbol').value='${sym}';document.querySelector('[data-tab=portfolio]').click()">Portefeuille</button>
+      </div>
+
+      <div class="notice" style="margin-top:14px;font-size:.78rem">
+        <b>Sources & limites</b><br>
+        ${src}<br>
+        Cotations diff\u00e9r\u00e9es (pas du temps r\u00e9el). Ratios calcul\u00e9s localement \u00e0 partir des donn\u00e9es disponibles.
+        Les scores et ratios sont <b>indicatifs</b> et ne constituent pas un conseil d'investissement.
+      </div>
     `;
+
     setTimeout(function(){
       try{
         let closes=[];
-        if(typeof priceHistory!=='undefined' && priceHistory[sym]) closes=(priceHistory[sym]||[]).map(b=>b.close).filter(x=>x>0);
-        if(closes.length<2 && typeof closesOf==='function') closes=closesOf(sym);
-        if(closes.length<2 && q) closes=[q.price];
-        if(typeof Chart==='undefined'||closes.length<2)return;
+        if(typeof priceHistory!=='undefined' && priceHistory[sym])
+          closes=(priceHistory[sym]||[]).map(b=>Number(b.close||b)).filter(x=>x>0);
+        if(closes.length<2 && typeof closesOf==='function')
+          closes=(closesOf(sym)||[]).map(Number).filter(x=>x>0);
+        if(closes.length<2 && price!=null) closes=[price];
         const canvas=document.getElementById('sheetChart');
-        if(!canvas)return;
-        if(window._sheetChart) window._sheetChart.destroy();
-        window._sheetChart=new Chart(canvas,{type:'line',data:{labels:closes.map((_,i)=>i+1),datasets:[{label:sym,data:closes,borderColor:'#3b82f6',tension:.2,pointRadius:2,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false}}}});
-      }catch(e){console.error(e);}
-    },200);
+        if(!canvas||typeof Chart==='undefined')return;
+        if(window._sheetChart){try{window._sheetChart.destroy();}catch(e){}}
+        if(closes.length<2){
+          canvas.parentElement.innerHTML='<p class="muted">Pas assez de points pour un graphique.</p>';
+          return;
+        }
+        const up=closes[closes.length-1]>=closes[0];
+        window._sheetChart=new Chart(canvas,{
+          type:'line',
+          data:{
+            labels:closes.map((_,i)=>i+1),
+            datasets:[{
+              label:sym,
+              data:closes,
+              borderColor:up?'#22c55e':'#ef4444',
+              backgroundColor:up?'rgba(34,197,94,.12)':'rgba(239,68,68,.12)',
+              fill:true,
+              tension:.25,
+              pointRadius:closes.length>20?0:2.5,
+              borderWidth:2
+            }]
+          },
+          options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+sheetFmt(ctx.raw,0)+' FCFA'}}},
+            scales:{
+              x:{display:false,grid:{display:false}},
+              y:{ticks:{callback:v=>sheetFmt(v,0),font:{size:10}},grid:{color:'rgba(255,255,255,.06)'}}
+            }
+          }
+        });
+      }catch(e){console.error('sheetChart',e);}
+    },180);
   };
 
   window.fillFundSelect=function(){
