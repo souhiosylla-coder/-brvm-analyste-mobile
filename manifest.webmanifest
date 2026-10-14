@@ -4,9 +4,11 @@
   "description": "Cotations et analyses BRVM (données différées)",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f3f6fa",
-  "theme_color": "#102c4e",
+  "orientation": "portrait-primary",
+  "background_color": "#070e1a",
+  "theme_color": "#0a1628",
   "lang": "fr",
+  "categories": ["finance", "business"],
   "icons": [
     {
       "src": "logo.svg",
