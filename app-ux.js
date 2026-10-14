@@ -1,4 +1,4 @@
-/* BRVM UX v3 — fiche société enrichie, watchlist, alertes */
+/* BRVM UX v4 — fiche, watchlist, alertes, comparateur secteur */
 (function(){
   const WKEY='brvm_watchlist', AKEY='brvm_alert_threshold';
   function getW(){try{return JSON.parse(localStorage.getItem(WKEY))||[];}catch(e){return [];}}
@@ -130,8 +130,8 @@
     sym=(sym||'').toUpperCase().trim();
     if(!sym)return;
     window._sheetSym=sym;
-    const btn=document.querySelector('[data-tab="sheet"]');
-    if(btn) btn.click();
+    if(typeof window.__brvmActivateTab==='function') window.__brvmActivateTab('sheet');
+    else { const btn=document.querySelector('[data-tab="sheet"]'); if(btn) btn.click(); }
     renderSheet(sym);
   };
 
@@ -170,34 +170,28 @@
     sym=(sym||window._sheetSym||'').toUpperCase();
     const box=document.getElementById('sheetBody');
     if(!box||!sym)return;
-
     const q=(typeof quotes!=='undefined'&&quotes[sym])||null;
     const f=((typeof fundamentals!=='undefined'&&fundamentals[sym])||{});
     const name=nameOf(sym);
     const sector=sectorOf(sym);
     const star=isWatched(sym)?'\u2605 Retirer':'\u2606 Favori';
-
     const price=q&&q.price!=null?Number(q.price):null;
     const varp=q&&q.variation_pct!=null?Number(q.variation_pct):null;
     const vCls=varp>0?'up':(varp<0?'down':'flat');
     const vTxt=varp==null?'\u2014':((varp>0?'+':'')+sheetFmt(varp,2)+'%');
-
     const per=(price!=null&&f.eps>0)?(price/f.eps):(f.per_ref!=null?f.per_ref:null);
     const dy=(price!=null&&f.dividend!=null&&price>0)?(100*f.dividend/price):(f.yield_ref!=null?f.yield_ref:null);
     const pb=(price!=null&&f.book>0)?(price/f.book):(f.pb!=null?f.pb:null);
     const roe=f.roe!=null?f.roe:((f.profitNew!=null&&f.equity>0)?(100*f.profitNew/f.equity):null);
     const debt=f.debt!=null?f.debt:f.total_liabilities;
     const de=(debt!=null&&f.equity>0)?(debt/f.equity):null;
-
     let histN=0;
     try{
       if(typeof priceHistory!=='undefined'&&priceHistory[sym]) histN=(priceHistory[sym]||[]).length;
       else if(typeof closesOf==='function') histN=(closesOf(sym)||[]).length;
     }catch(e){}
-
     const src=f.source||'Sources : BloomAfrik / cotations diff\u00e9r\u00e9es BRVM';
     const seance=(typeof quotesMeta!=='undefined'&&quotesMeta&&quotesMeta.retrieved_on)||(q&&q.date)||'\u2014';
-
     box.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
         <div>
@@ -211,9 +205,7 @@
           <div class="muted" style="font-size:.72rem">S\u00e9ance ${seance}</div>
         </div>
       </div>
-
       ${sheetMissingBanner(f,q)}
-
       <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Valorisation</p>
       <div class="row">
         ${sheetMetric('PER', per!=null?sheetFmt(per,2)+'x':'\u2014', f.eps!=null?'via BPA':'r\u00e9f. march\u00e9')}
@@ -223,7 +215,6 @@
         ${sheetMetric('P/B', pb!=null?sheetFmt(pb,2)+'x':'\u2014', f.book!=null?'cours/book':'r\u00e9f.')}
         ${sheetMetric('ROE', roe!=null?sheetFmt(roe,2)+'%':'\u2014', 'r\u00e9sultat / CP')}
       </div>
-
       <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Donn\u00e9es par action</p>
       <div class="row">
         ${sheetMetric('BPA', f.eps!=null?sheetFmt(f.eps,2):'\u2014','FCFA')}
@@ -233,7 +224,6 @@
         ${sheetMetric('Book value', f.book!=null?sheetFmt(f.book,2):'\u2014','FCFA')}
         ${sheetMetric('Capitalisation', f.market_cap_mds!=null?sheetFmt(f.market_cap_mds,1)+' Mds':'\u2014','FCFA')}
       </div>
-
       <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Comptes (si disponibles)</p>
       <div class="row">
         ${sheetMetric('CA / PNB N', sheetMoney(f.revenueNew), f.real_ca?'source officielle':'')}
@@ -251,26 +241,21 @@
         ${sheetMetric('D/E', de!=null?sheetFmt(de,2)+'x':'\u2014','dettes/CP')}
         ${sheetMetric('Croissance (r\u00e9f.)', f.growth!=null?sheetFmt(f.growth,1)+'%':'\u2014','valo')}
       </div>
-
       <p class="muted" style="margin:14px 0 6px;font-weight:600;color:var(--text)">Tendance (${histN} point${histN>1?'s':''})</p>
       <div class="chart-wrap" style="height:200px"><canvas id="sheetChart"></canvas></div>
       <p class="muted" style="font-size:.72rem;margin-top:-6px">${histN<5?'Historique court \u2014 indicateurs techniques limit\u00e9s.':'Historique suffisant pour une lecture technique de base.'}</p>
-
       <div class="actions" style="margin-top:12px">
         <button type="button" onclick="analyzeSymbol('${sym}')">Fondamental</button>
         <button type="button" class="secondary" onclick="analyzeSymbol('${sym}',{tab:'technical'})">Technique</button>
         <button type="button" class="secondary" onclick="toggleWatch('${sym}');renderSheet('${sym}')">${star}</button>
-        <button type="button" class="secondary" onclick="document.getElementById('pSymbol').value='${sym}';document.querySelector('[data-tab=portfolio]').click()">Portefeuille</button>
+        <button type="button" class="secondary" onclick="document.getElementById('pSymbol').value='${sym}';if(window.__brvmActivateTab)__brvmActivateTab('portfolio');else document.querySelector('[data-tab=portfolio]').click()">Portefeuille</button>
       </div>
-
       <div class="notice" style="margin-top:14px;font-size:.78rem">
-        <b>Sources & limites</b><br>
-        ${src}<br>
-        Cotations diff\u00e9r\u00e9es (pas du temps r\u00e9el). Ratios calcul\u00e9s localement \u00e0 partir des donn\u00e9es disponibles.
+        <b>Sources & limites</b><br>${src}<br>
+        Cotations diff\u00e9r\u00e9es (pas du temps r\u00e9el). Ratios calcul\u00e9s localement.
         Les scores et ratios sont <b>indicatifs</b> et ne constituent pas un conseil d'investissement.
       </div>
     `;
-
     setTimeout(function(){
       try{
         let closes=[];
@@ -289,28 +274,8 @@
         const up=closes[closes.length-1]>=closes[0];
         window._sheetChart=new Chart(canvas,{
           type:'line',
-          data:{
-            labels:closes.map((_,i)=>i+1),
-            datasets:[{
-              label:sym,
-              data:closes,
-              borderColor:up?'#22c55e':'#ef4444',
-              backgroundColor:up?'rgba(34,197,94,.12)':'rgba(239,68,68,.12)',
-              fill:true,
-              tension:.25,
-              pointRadius:closes.length>20?0:2.5,
-              borderWidth:2
-            }]
-          },
-          options:{
-            responsive:true,
-            maintainAspectRatio:false,
-            plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+sheetFmt(ctx.raw,0)+' FCFA'}}},
-            scales:{
-              x:{display:false,grid:{display:false}},
-              y:{ticks:{callback:v=>sheetFmt(v,0),font:{size:10}},grid:{color:'rgba(255,255,255,.06)'}}
-            }
-          }
+          data:{labels:closes.map((_,i)=>i+1),datasets:[{label:sym,data:closes,borderColor:up?'#22c55e':'#ef4444',backgroundColor:up?'rgba(34,197,94,.12)':'rgba(239,68,68,.12)',fill:true,tension:.25,pointRadius:closes.length>20?0:2.5,borderWidth:2}]},
+          options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+sheetFmt(ctx.raw,0)+' FCFA'}}},scales:{x:{display:false,grid:{display:false}},y:{ticks:{callback:v=>sheetFmt(v,0),font:{size:10}},grid:{color:'rgba(255,255,255,.06)'}}}}
         });
       }catch(e){console.error('sheetChart',e);}
     },180);
@@ -336,12 +301,28 @@
     const map={fEPS:f.eps,fDividend:f.dividend,fBook:f.book,fGrowth:f.growth,fRevenueOld:f.revenueOld,fRevenueNew:f.revenueNew,fProfitOld:f.profitOld,fProfitNew:f.profitNew,fDebt:f.debt!=null?f.debt:f.total_liabilities,fEquity:f.equity};
     Object.keys(map).forEach(id=>{if(map[id]!=null){const el=document.getElementById(id);if(el)el.value=map[id];}});
     if(opts.tab==='technical'){
-      document.querySelector('[data-tab="technical"]')?.click();
+      if(window.__brvmActivateTab) window.__brvmActivateTab('technical');
+      else document.querySelector('[data-tab="technical"]')?.click();
       setTimeout(()=>{if(typeof applyTechSymbol==='function')applyTechSymbol(s);},80);
     } else {
-      document.querySelector('[data-tab="fundamental"]')?.click();
+      if(window.__brvmActivateTab) window.__brvmActivateTab('fundamental');
+      else document.querySelector('[data-tab="fundamental"]')?.click();
       setTimeout(()=>{if(typeof calcFundamental==='function')calcFundamental();},50);
     }
+  };
+
+  window.compareBySector=function(){
+    try{
+      const s1=(document.getElementById('c1')||{}).value||'';
+      const base=s1||(window._sheetSym||'');
+      if(!base||typeof companies==='undefined'){alert('Choisissez d\u2019abord le titre 1 (ou ouvrez une fiche).');return;}
+      const sec=(companies.find(c=>c[0]===base)||[])[2];
+      if(!sec){alert('Secteur inconnu pour '+base);return;}
+      const peers=companies.filter(c=>c[2]===sec).map(c=>c[0]);
+      const pick=[base].concat(peers.filter(x=>x!==base)).slice(0,4);
+      ['c1','c2','c3','c4'].forEach((id,i)=>{const el=document.getElementById(id);if(el) el.value=pick[i]||'';});
+      if(typeof runCompare==='function') runCompare();
+    }catch(e){console.error(e);}
   };
 
   function boot(){
