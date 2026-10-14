@@ -3,134 +3,419 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#102c4e">
-<meta name="description" content="Analyse cotations BRVM">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="Analyse cotations, fondamentaux et technique BRVM — données différées">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BRVM Analyste">
 <title>BRVM Analyste Mobile</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="logo.svg">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0b1220;--card:#152238;--text:#e8eef7;--muted:#9bb0c9;--accent:#3b82f6;--ok:#22c55e;--bad:#ef4444;--warn:#eab308}
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
-.top{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,#102c4e,#0b1220);padding:12px 14px 8px;border-bottom:1px solid rgba(255,255,255,.08)}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:36px;height:36px}
-.brand h1{font-size:1.05rem;margin:0}
-.live{font-size:.78rem;color:var(--muted);margin-top:4px}
-.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.nav{display:flex;gap:6px;overflow-x:auto;padding:8px 14px;scrollbar-width:none}
-.nav button{flex:0 0 auto;border:0;border-radius:999px;padding:8px 12px;background:#1a2b45;color:var(--text);font-size:.85rem}
-.nav button.active{background:var(--accent)}
-main{padding:12px 14px 80px;max-width:720px;margin:0 auto}
-.screen{display:none}.screen.active{display:block}
-.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,.06)}
-.card h2{margin:0 0 10px;font-size:1.05rem}
-label{display:block;font-size:.78rem;color:var(--muted);margin:8px 0 4px}
-input,select,textarea,button{font:inherit}
-input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#0f1a2c;color:var(--text)}
+:root{
+  --bg:#070e1a;--bg2:#0c1526;--card:rgba(21,34,56,.85);--card-solid:#121f35;
+  --text:#eef3fb;--muted:#8fa3bc;--accent:#3b82f6;--accent2:#60a5fa;
+  --ok:#22c55e;--bad:#ef4444;--warn:#eab308;--border:rgba(255,255,255,.08);
+  --radius:16px;--shadow:0 8px 32px rgba(0,0,0,.35);
+  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--font);background:var(--bg);color:var(--text);
+  line-height:1.45;min-height:100dvh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(59,130,246,.18),transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%,rgba(14,165,233,.06),transparent);
+}
+.top{
+  position:sticky;top:0;z-index:30;padding:calc(10px + var(--safe-t)) 16px 10px;
+  background:rgba(10,18,32,.82);backdrop-filter:blur(16px) saturate(1.4);
+  -webkit-backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid var(--border);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:40px;height:40px;border-radius:10px;box-shadow:0 2px 12px rgba(59,130,246,.25)}
+.brand h1{font-size:1.08rem;margin:0;font-weight:700;letter-spacing:-.02em}
+.live{font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.35}
+.live-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);
+  margin-right:5px;vertical-align:middle;box-shadow:0 0 0 0 rgba(34,197,94,.5);animation:pulse 2s infinite
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}
+  70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+}
+.meta-line{font-size:.7rem;color:var(--muted);margin-top:6px;opacity:.9}
+.nav{display:flex;gap:6px;overflow-x:auto;padding:10px 16px 4px;scrollbar-width:none;-ms-overflow-style:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{
+  flex:0 0 auto;border:0;border-radius:999px;padding:8px 14px;
+  background:rgba(26,43,69,.7);color:var(--text);font-size:.8rem;font-weight:500;
+  transition:background .15s,transform .1s;cursor:pointer
+}
+.nav button:active{transform:scale(.96)}
+.nav button.active{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  box-shadow:0 4px 14px rgba(59,130,246,.35)
+}
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:6px 4px calc(6px + var(--safe-b));
+  background:rgba(10,18,32,.92);backdrop-filter:blur(20px) saturate(1.3);
+  -webkit-backdrop-filter:blur(20px) saturate(1.3);border-top:1px solid var(--border);
+}
+.bottom-nav button{
+  border:0;background:transparent;color:var(--muted);padding:6px 2px;
+  font-size:.65rem;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer
+}
+.bottom-nav button .ico{font-size:1.2rem;line-height:1}
+.bottom-nav button.active{color:var(--accent2)}
+.bottom-nav button.active .ico{filter:drop-shadow(0 0 6px rgba(59,130,246,.5))}
+main{padding:12px 14px calc(88px + var(--safe-b));max-width:720px;margin:0 auto}
+.screen{display:none;animation:fadeIn .22s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{
+  background:var(--card);backdrop-filter:blur(12px);border-radius:var(--radius);
+  padding:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow)
+}
+.card h2{margin:0 0 10px;font-size:1.05rem;font-weight:650;letter-spacing:-.01em}
+.card h3{font-size:.95rem;margin:14px 0 6px;font-weight:600}
+label{display:block;font-size:.75rem;color:var(--muted);margin:10px 0 4px;font-weight:500}
+input,select,textarea{font:inherit;color:var(--text);width:100%;padding:11px 13px;border-radius:12px;
+border:1px solid rgba(255,255,255,.1);background:rgba(15,26,44,.9)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(59,130,246,.55);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
 textarea{min-height:90px;resize:vertical}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-button,.btn{border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:#fff;cursor:pointer}
-button.secondary,.btn.secondary{background:#243652}
-button.danger{background:#7f1d1d}
-.btn-refresh{background:#0f766e}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button,.btn{
+  border:0;border-radius:12px;padding:11px 16px;background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:#fff;cursor:pointer;font-weight:600;font-size:.9rem
+}
+button:active,.btn:active{transform:scale(.97)}
+button.secondary,.btn.secondary{background:rgba(36,54,82,.9);font-weight:500}
+button.danger{background:linear-gradient(135deg,#b91c1c,#7f1d1d)}
+.btn-refresh{background:linear-gradient(135deg,#0d9488,#0f766e)}
+a.btn{text-decoration:none;display:inline-block}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .row.wide{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:520px){.row,.row.wide{grid-template-columns:1fr 1fr}}
-.metric{background:#0f1a2c;border-radius:12px;padding:10px}
-.metric span{display:block;font-size:.75rem;color:var(--muted)}
-.metric strong{font-size:1rem}
+@media(max-width:520px){.row.wide{grid-template-columns:1fr 1fr}}
+.metric{background:rgba(15,26,44,.75);border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,.05)}
+.metric span{display:block;font-size:.72rem;color:var(--muted);margin-bottom:2px}
+.metric strong{font-size:1.02rem;font-weight:650;font-variant-numeric:tabular-nums}
 .muted{color:var(--muted);font-size:.85rem}
-.notice{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:10px;font-size:.85rem;margin-top:10px}
+.notice{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.22);border-radius:12px;padding:12px;font-size:.84rem;margin-top:10px}
 .notice.hidden,.hidden{display:none}
-.score-box{border-radius:12px;padding:12px;margin-top:10px;text-align:center}
-.score-box .score{font-size:1.6rem;font-weight:700}
-.score-attractif{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.35)}
-.score-neutre{background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3)}
-.score-cher{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
-.quote-row{display:grid;grid-template-columns:64px 1fr auto auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.quote-sym{font-weight:700}
-.quote-name{font-size:.82rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.quote-price{font-variant-numeric:tabular-nums}
-.quote-var{font-size:.82rem;min-width:64px;text-align:right}
+.score-box{border-radius:14px;padding:14px;margin-top:10px;text-align:center}
+.score-box .score{font-size:1.7rem;font-weight:700}
+.score-attractif{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+.score-neutre{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.28)}
+.score-cher{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.28)}
+.quote-row{display:grid;grid-template-columns:58px 1fr auto auto;gap:8px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.quote-sym{font-weight:700;font-size:.9rem}
+.quote-name{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quote-price{font-variant-numeric:tabular-nums;font-weight:600}
+.quote-var{font-size:.8rem;min-width:62px;text-align:right;font-weight:600}
 .quote-var.up{color:var(--ok)}.quote-var.down{color:var(--bad)}.quote-var.flat{color:var(--muted)}
-.chart-wrap{position:relative;width:100%;margin:8px 0 14px}
+.chart-wrap{position:relative;width:100%;margin:8px 0 14px;border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse;font-size:.8rem}
-th,td{padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
-.foot{text-align:center;color:var(--muted);font-size:.75rem;padding:16px 8px}
+th,td{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left}
+th{color:var(--muted);font-weight:500;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em}
+.foot{text-align:center;color:var(--muted);font-size:.72rem;padding:20px 8px 8px;opacity:.85}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.quick-chip{
+  display:flex;align-items:center;gap:10px;padding:12px;background:rgba(15,26,44,.8);
+  border-radius:14px;border:1px solid var(--border);cursor:pointer;text-align:left;color:var(--text);font:inherit;width:100%
+}
+.quick-chip .qi{font-size:1.25rem}
+.quick-chip span{display:block;font-size:.72rem;color:var(--muted);font-weight:400}
+.quick-chip strong{font-size:.88rem}
+.stat-card.card.metric{margin-bottom:0}
 </style>
 </head>
 <body>
 <header class="top">
-<div class="brand"><img src="logo.svg" alt="logo"><div><h1>BRVM Analyste Mobile</h1><div class="live" id="liveStatus"><span class="live-dot"></span>Chargement\u2026</div></div></div>
-<div class="muted" style="font-size:.75rem;margin-top:4px">Derni\u00e8re MAJ UI : <span id="lastUpdate">\u2014</span></div>
+  <div class="brand">
+    <img src="logo.svg" alt="BRVM Analyste">
+    <div>
+      <h1>BRVM Analyste</h1>
+      <div class="live" id="liveStatus"><span class="live-dot"></span>Chargement…</div>
+    </div>
+  </div>
+  <div class="meta-line">Dernière MAJ : <span id="lastUpdate">—</span></div>
 </header>
-<nav class="nav">
-<button data-tab="dashboard" class="active">Accueil</button>
-<button data-tab="companies">March\u00e9</button>
-<button data-tab="sheet">Fiche</button>
-<button data-tab="watch">Favoris</button>
-<button data-tab="fundamental">Fondamental</button>
-<button data-tab="technical">Technique</button>
-<button data-tab="compare">Comparateur</button>
-<button data-tab="portfolio">Portefeuille</button>
-<button data-tab="data">Donn\u00e9es</button>
+
+<nav class="nav" id="topNav" aria-label="Navigation">
+  <button type="button" data-tab="dashboard" class="active">Accueil</button>
+  <button type="button" data-tab="companies">Marché</button>
+  <button type="button" data-tab="sheet">Fiche</button>
+  <button type="button" data-tab="watch">Favoris</button>
+  <button type="button" data-tab="fundamental">Fondamental</button>
+  <button type="button" data-tab="technical">Technique</button>
+  <button type="button" data-tab="compare">Comparateur</button>
+  <button type="button" data-tab="portfolio">Portefeuille</button>
+  <button type="button" data-tab="data">Données</button>
 </nav>
+
 <main>
 <section id="dashboard" class="screen active">
-<div class="card"><h2>Bienvenue</h2><p>Cours BRVM (diff\u00e9r\u00e9s), ratios, technique, comparateur et portefeuille.</p><div class="notice"><b>Rappel :</b> donn\u00e9es diff\u00e9r\u00e9es \u00b7 scores indicatifs \u00b7 pas un conseil d'investissement.</div><div class="actions"><button class="btn-refresh" onclick="document.querySelector('[data-tab=companies]').click();refreshQuotes()">Cours live</button><a class="btn secondary" href="https://www.brvm.org/fr/flux-differe" target="_blank" rel="noopener">Site BRVM</a></div></div>
-<div class="row"><div class="card metric"><span>Soci\u00e9t\u00e9s</span><strong id="companyCount">\u2014</strong></div><div class="card metric"><span>Cotations</span><strong id="quoteCount">\u2014</strong></div></div>
-<div class="row"><div class="card metric"><span>Portefeuille</span><strong id="portfolioValue">\u2014</strong></div><div class="card metric"><span>Latent</span><strong id="dashLatent">\u2014</strong></div></div>
-<div class="row"><div class="card metric"><span>R\u00e9alis\u00e9</span><strong id="dashRealized">\u2014</strong></div><div class="card metric"><span>Dividendes</span><strong id="dashDiv">\u2014</strong></div></div>
-<div class="card" id="moversCard">
-<h2>Mouvements du jour</h2>
-<p class="muted" style="margin:0 0 8px">Top hausses / baisses. Touchez un titre pour la fiche.</p>
-<div class="row">
-<div>
-<p class="muted" style="margin:0 0 4px;color:#22c55e">\u25b2 Plus fortes hausses</p>
-<div id="topGainers"><p class="muted">Chargement\u2026</p></div>
-</div>
-<div>
-<p class="muted" style="margin:0 0 4px;color:#ef4444">\u25bc Plus fortes baisses</p>
-<div id="topLosers"><p class="muted">Chargement\u2026</p></div>
-</div>
-</div>
-</div>
+  <div class="card">
+    <h2>Tableau de bord</h2>
+    <p class="muted" style="margin:0 0 8px">Cotations différées BRVM · analyses fondamentales &amp; techniques · portefeuille local.</p>
+    <div class="notice"><b>Rappel :</b> données différées · scores indicatifs · pas un conseil d’investissement.</div>
+    <div class="quick-grid">
+      <button type="button" class="quick-chip" onclick="document.querySelector('[data-tab=companies]').click();if(typeof refreshQuotes==='function')refreshQuotes()">
+        <span class="qi">📈</span><div><strong>Marché</strong><span>Cours &amp; variations</span></div>
+      </button>
+      <button type="button" class="quick-chip" onclick="document.querySelector('[data-tab=portfolio]').click()">
+        <span class="qi">💼</span><div><strong>Portefeuille</strong><span>Positions &amp; P&amp;L</span></div>
+      </button>
+      <button type="button" class="quick-chip" onclick="document.querySelector('[data-tab=fundamental]').click()">
+        <span class="qi">📊</span><div><strong>Fondamental</strong><span>PER, ROE, rdt…</span></div>
+      </button>
+      <button type="button" class="quick-chip" onclick="document.querySelector('[data-tab=technical]').click()">
+        <span class="qi">📉</span><div><strong>Technique</strong><span>RSI, MACD, graphiques</span></div>
+      </button>
+    </div>
+    <div class="actions">
+      <a class="btn secondary" href="https://www.brvm.org/fr/flux-differe" target="_blank" rel="noopener">Site BRVM</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card metric stat-card"><span>Sociétés</span><strong id="companyCount">—</strong></div>
+    <div class="card metric stat-card"><span>Cotations</span><strong id="quoteCount">—</strong></div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <div class="card metric stat-card"><span>Portefeuille</span><strong id="portfolioValue">—</strong></div>
+    <div class="card metric stat-card"><span>Latent</span><strong id="dashLatent">—</strong></div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <div class="card metric stat-card"><span>Réalisé</span><strong id="dashRealized">—</strong></div>
+    <div class="card metric stat-card"><span>Dividendes</span><strong id="dashDiv">—</strong></div>
+  </div>
+  <div class="card" id="moversCard" style="margin-top:12px">
+    <h2>Mouvements du jour</h2>
+    <p class="muted" style="margin:0 0 8px">Top hausses / baisses. Touchez un titre pour ouvrir la fiche.</p>
+    <div class="row">
+      <div>
+        <p class="muted" style="margin:0 0 4px;color:var(--ok)">▲ Plus fortes hausses</p>
+        <div id="topGainers"><p class="muted">Chargement…</p></div>
+      </div>
+      <div>
+        <p class="muted" style="margin:0 0 4px;color:var(--bad)">▼ Plus fortes baisses</p>
+        <div id="topLosers"><p class="muted">Chargement…</p></div>
+      </div>
+    </div>
+  </div>
 </section>
-<section id="companies" class="screen"><div class="card"><h2>March\u00e9 BRVM</h2><label>Recherche</label><input id="companySearch" placeholder="Ticker ou nom"><label>Secteur</label><select id="sectorFilter"><option value="">Tous</option></select><div id="companyList" style="margin-top:10px"></div></div></section>
-<section id="sheet" class="screen"><div class="card" id="sheetBody"><p class="muted">Choisissez un titre depuis le March\u00e9, les mouvements du jour ou les favoris.</p></div></section>
+
+<section id="companies" class="screen">
+  <div class="card">
+    <h2>Marché BRVM</h2>
+    <label>Recherche</label>
+    <input id="companySearch" placeholder="Ticker ou nom" autocomplete="off">
+    <label>Secteur</label>
+    <select id="sectorFilter"><option value="">Tous les secteurs</option></select>
+    <div id="companyList" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<section id="sheet" class="screen">
+  <div class="card" id="sheetBody">
+    <p class="muted">Choisissez un titre depuis le Marché, les mouvements du jour ou les favoris.</p>
+  </div>
+</section>
+
 <section id="watch" class="screen">
-<div class="card"><h2>Favoris</h2><p class="muted">Liste locale (t\u00e9l\u00e9phone uniquement).</p><div id="watchList"><p class="muted">Chargement\u2026</p></div></div>
-<div class="card"><h2>Alertes de variation</h2>
-<label>Seuil (ex. 5 = \u00b15 %)</label>
-<input id="alertThreshold" type="number" step="0.5" min="1" value="5">
-<p class="muted" style="margin-top:8px">Titres dont |variation| \u2265 seuil sur la s\u00e9ance affich\u00e9e.</p>
-<div id="alertList"><p class="muted">Chargement\u2026</p></div>
-</div>
+  <div class="card">
+    <h2>Favoris</h2>
+    <p class="muted">Liste enregistrée sur cet appareil uniquement.</p>
+    <div id="watchList"><p class="muted">Chargement…</p></div>
+  </div>
+  <div class="card">
+    <h2>Alertes de variation</h2>
+    <label>Seuil (ex. 5 = ±5 %)</label>
+    <input id="alertThreshold" type="number" step="0.5" min="1" value="5">
+    <p class="muted" style="margin-top:8px">Titres dont |variation| ≥ seuil sur la séance affichée.</p>
+    <div id="alertList"><p class="muted">Chargement…</p></div>
+  </div>
 </section>
-<section id="fundamental" class="screen"><div class="card"><h2>Analyse fondamentale</h2>
-<p class="muted">S\u00e9lectionnez une action : les donn\u00e9es se remplissent automatiquement.</p>
-<label>Action</label><select id="fSelect" onchange="analyzeSymbol(this.value)"><option value="">Choisir une action\u2026</option></select>
-<label>Symbole</label><input id="fSymbol"><label>Cours</label><input id="fPrice" type="number" step="any"><label>BPA</label><input id="fEPS" type="number" step="any"><label>Dividende</label><input id="fDividend" type="number" step="any"><label>Valeur comptable</label><input id="fBook" type="number" step="any"><label>CA/PNB N-1</label><input id="fRevenueOld" type="number" step="any"><label>CA/PNB N</label><input id="fRevenueNew" type="number" step="any"><label>R\u00e9sultat net N-1</label><input id="fProfitOld" type="number" step="any"><label>R\u00e9sultat net N</label><input id="fProfitNew" type="number" step="any"><label>Dettes</label><input id="fDebt" type="number" step="any"><label>Capitaux propres</label><input id="fEquity" type="number" step="any"><label>Croissance % (valo)</label><input id="fGrowth" type="number" step="any"><div class="actions"><button onclick="calcFundamental()">Calculer</button><button class="secondary" onclick="clearFundamental()">Effacer</button></div><div id="fundamentalScore" class="hidden"></div><div id="fundamentalResults" class="row wide" style="margin-top:12px"></div><div id="fundamentalComment" class="notice hidden"></div></div></section>
-<section id="technical" class="screen"><div class="card"><h2>Analyse technique</h2><p class="muted">Choisissez une action : graphiques automatiques.</p><label>Action</label><select id="tSelect" onchange="applyTechSymbol(this.value)"><option value="">Choisir une action\u2026</option></select><label>Symbole</label><input id="tSymbol" placeholder="ex. BBGC"><label>Historique cl\u00f4tures (auto)</label><textarea id="tPrices" placeholder="Charg\u00e9 automatiquement\u2026"></textarea><p class="muted" id="techHistInfo">S\u00e9lectionnez un titre.</p><div class="actions"><button onclick="(function(){var s=(document.getElementById('tSymbol').value||document.getElementById('tSelect').value||'').toUpperCase().trim();if(s&&typeof applyTechSymbol==='function')applyTechSymbol(s);else calcTechnical();})()">Analyser / Graphiques</button></div><div id="technicalScore" class="hidden"></div><div id="technicalResults" class="row wide" style="margin-top:12px"></div><p class="muted" style="margin-bottom:2px">Cours \u00b7 MM5</p><div class="chart-wrap" style="height:260px"><canvas id="priceChart"></canvas></div><p class="muted" style="margin-bottom:2px">RSI adaptatif</p><div class="chart-wrap" style="height:150px"><canvas id="rsiChart"></canvas></div><p class="muted" style="margin-bottom:2px">MACD</p><div class="chart-wrap" style="height:150px"><canvas id="macdChart"></canvas></div><div id="technicalComment" class="notice hidden"></div></div></section>
-<section id="compare" class="screen"><div class="card"><h2>Comparateur</h2><p class="muted">Comparez 2 \u00e0 4 titres.</p><div class="row"><div><label>Titre 1</label><select id="c1"><option value="">\u2014</option></select></div><div><label>Titre 2</label><select id="c2"><option value="">\u2014</option></select></div><div><label>Titre 3</label><select id="c3"><option value="">\u2014</option></select></div><div><label>Titre 4</label><select id="c4"><option value="">\u2014</option></select></div></div><div class="actions"><button onclick="runCompare()">Comparer</button></div><div id="compareTable" style="margin-top:12px;overflow:auto"></div><div id="compareComment" class="notice hidden"></div></div></section>
-<section id="portfolio" class="screen"><div class="card"><h2>Portefeuille</h2><label>Symbole</label><input id="pSymbol"><label>Quantit\u00e9</label><input id="pQty" type="number" step="any"><label>Prix (ou montant dividende)</label><input id="pCost" type="number" step="any"><label>Frais</label><input id="pFee" type="number" step="any" value="0"><div class="actions"><button onclick="portfolioBuy()">Acheter</button><button class="secondary" onclick="portfolioSell()">Vendre</button><button class="secondary" onclick="portfolioDividend()">Dividende</button></div><div class="row" style="margin-top:12px"><div class="metric"><span>Investi</span><strong id="pfInvested">\u2014</strong></div><div class="metric"><span>Actuel</span><strong id="pfCurrent">\u2014</strong></div></div><div class="row"><div class="metric"><span>Latent</span><strong id="pfLatent">\u2014</strong></div><div class="metric"><span>R\u00e9alis\u00e9</span><strong id="pfRealized">\u2014</strong></div></div><div class="row"><div class="metric"><span>Dividendes</span><strong id="pfDiv">\u2014</strong></div><div class="metric"><span>Frais</span><strong id="pfFees">\u2014</strong></div></div><h3 style="font-size:.95rem;margin:14px 0 6px">Positions</h3><div style="overflow:auto"><table><thead><tr><th>Titre</th><th>Qt\u00e9</th><th>CMP</th><th>Cours</th><th>P&L</th><th></th></tr></thead><tbody id="holdingsRows"></tbody></table></div><h3 style="font-size:.95rem;margin:14px 0 6px">Op\u00e9rations</h3><div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Titre</th><th>Qt\u00e9</th><th>Prix</th><th>Frais</th><th>Montant</th></tr></thead><tbody id="opsRows"></tbody></table></div></div></section>
-<section id="data" class="screen"><div class="card"><h2>Qualit\u00e9 des donn\u00e9es</h2><div id="dataQuality"><p class="muted">Chargement\u2026</p></div></div><div class="card"><h2>Import & sauvegarde</h2><input id="csvFile" type="file" accept=".csv,.json"><div class="actions"><button onclick="importCSV()">Import CSV</button><button class="secondary" onclick="downloadTemplate()">Mod\u00e8le CSV</button><button class="secondary" onclick="exportBackup()">Backup JSON</button><button class="secondary" onclick="importBackupTriggered()">Restaurer</button><button class="danger" onclick="clearQuotes()">Effacer cours</button></div><div id="importMessage" class="notice hidden"></div></div></section>
-<div class="foot">Donn\u00e9es diff\u00e9r\u00e9es BRVM \u2014 analyses indicatives \u2014 pas un conseil d'investissement.</div>
+
+<section id="fundamental" class="screen">
+  <div class="card">
+    <h2>Analyse fondamentale</h2>
+    <p class="muted">Sélectionnez une action : les données se remplissent automatiquement.</p>
+    <label>Action</label>
+    <select id="fSelect" onchange="analyzeSymbol(this.value)"><option value="">Choisir une action…</option></select>
+    <label>Symbole</label><input id="fSymbol">
+    <label>Cours</label><input id="fPrice" type="number" step="any">
+    <label>BPA</label><input id="fEPS" type="number" step="any">
+    <label>Dividende</label><input id="fDividend" type="number" step="any">
+    <label>Valeur comptable</label><input id="fBook" type="number" step="any">
+    <label>CA/PNB N-1</label><input id="fRevenueOld" type="number" step="any">
+    <label>CA/PNB N</label><input id="fRevenueNew" type="number" step="any">
+    <label>Résultat net N-1</label><input id="fProfitOld" type="number" step="any">
+    <label>Résultat net N</label><input id="fProfitNew" type="number" step="any">
+    <label>Dettes</label><input id="fDebt" type="number" step="any">
+    <label>Capitaux propres</label><input id="fEquity" type="number" step="any">
+    <label>Croissance % (valo)</label><input id="fGrowth" type="number" step="any">
+    <div class="actions">
+      <button type="button" onclick="calcFundamental()">Calculer</button>
+      <button type="button" class="secondary" onclick="clearFundamental()">Effacer</button>
+    </div>
+    <div id="fundamentalScore" class="hidden"></div>
+    <div id="fundamentalResults" class="row wide" style="margin-top:12px"></div>
+    <div id="fundamentalComment" class="notice hidden"></div>
+  </div>
+</section>
+
+<section id="technical" class="screen">
+  <div class="card">
+    <h2>Analyse technique</h2>
+    <p class="muted">Choisissez une action : graphiques automatiques (historique différé).</p>
+    <label>Action</label>
+    <select id="tSelect" onchange="applyTechSymbol(this.value)"><option value="">Choisir une action…</option></select>
+    <label>Symbole</label><input id="tSymbol" placeholder="ex. BBGC">
+    <label>Historique clôtures (auto)</label>
+    <textarea id="tPrices" placeholder="Chargé automatiquement…"></textarea>
+    <p class="muted" id="techHistInfo">Sélectionnez un titre.</p>
+    <div class="actions">
+      <button type="button" onclick="(function(){var s=(document.getElementById('tSymbol').value||document.getElementById('tSelect').value||'').toUpperCase().trim();if(s&&typeof applyTechSymbol==='function')applyTechSymbol(s);else calcTechnical();})()">Analyser / Graphiques</button>
+    </div>
+    <div id="technicalScore" class="hidden"></div>
+    <div id="technicalResults" class="row wide" style="margin-top:12px"></div>
+    <p class="muted" style="margin-bottom:2px">Cours · MM5</p>
+    <div class="chart-wrap" style="height:260px"><canvas id="priceChart"></canvas></div>
+    <p class="muted" style="margin-bottom:2px">RSI adaptatif</p>
+    <div class="chart-wrap" style="height:150px"><canvas id="rsiChart"></canvas></div>
+    <p class="muted" style="margin-bottom:2px">MACD</p>
+    <div class="chart-wrap" style="height:150px"><canvas id="macdChart"></canvas></div>
+    <div id="technicalComment" class="notice hidden"></div>
+  </div>
+</section>
+
+<section id="compare" class="screen">
+  <div class="card">
+    <h2>Comparateur</h2>
+    <p class="muted">Comparez 2 à 4 titres côte à côte.</p>
+    <div class="row">
+      <div><label>Titre 1</label><select id="c1"><option value="">—</option></select></div>
+      <div><label>Titre 2</label><select id="c2"><option value="">—</option></select></div>
+      <div><label>Titre 3</label><select id="c3"><option value="">—</option></select></div>
+      <div><label>Titre 4</label><select id="c4"><option value="">—</option></select></div>
+    </div>
+    <div class="actions">
+      <button type="button" onclick="runCompare()">Comparer</button>
+      <button type="button" class="secondary" onclick="if(typeof compareBySector==='function')compareBySector()">Même secteur</button>
+    </div>
+    <div id="compareTable" style="margin-top:12px;overflow:auto"></div>
+    <div id="compareComment" class="notice hidden"></div>
+  </div>
+</section>
+
+<section id="portfolio" class="screen">
+  <div class="card">
+    <h2>Portefeuille</h2>
+    <label>Symbole</label><input id="pSymbol">
+    <label>Quantité</label><input id="pQty" type="number" step="any">
+    <label>Prix (ou montant dividende)</label><input id="pCost" type="number" step="any">
+    <label>Frais</label><input id="pFee" type="number" step="any" value="0">
+    <div class="actions">
+      <button type="button" onclick="portfolioBuy()">Acheter</button>
+      <button type="button" class="secondary" onclick="portfolioSell()">Vendre</button>
+      <button type="button" class="secondary" onclick="portfolioDividend()">Dividende</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="metric"><span>Investi</span><strong id="pfInvested">—</strong></div>
+      <div class="metric"><span>Actuel</span><strong id="pfCurrent">—</strong></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="metric"><span>Latent</span><strong id="pfLatent">—</strong></div>
+      <div class="metric"><span>Réalisé</span><strong id="pfRealized">—</strong></div>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="metric"><span>Dividendes</span><strong id="pfDiv">—</strong></div>
+      <div class="metric"><span>Frais</span><strong id="pfFees">—</strong></div>
+    </div>
+    <h3>Positions</h3>
+    <div style="overflow:auto"><table><thead><tr><th>Titre</th><th>Qté</th><th>CMP</th><th>Cours</th><th>P&amp;L</th><th></th></tr></thead><tbody id="holdingsRows"></tbody></table></div>
+    <h3>Opérations</h3>
+    <div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Titre</th><th>Qté</th><th>Prix</th><th>Frais</th><th>Montant</th></tr></thead><tbody id="opsRows"></tbody></table></div>
+  </div>
+</section>
+
+<section id="data" class="screen">
+  <div class="card">
+    <h2>Qualité des données</h2>
+    <div id="dataQuality"><p class="muted">Chargement…</p></div>
+  </div>
+  <div class="card">
+    <h2>Import &amp; sauvegarde</h2>
+    <input id="csvFile" type="file" accept=".csv,.json">
+    <div class="actions">
+      <button type="button" onclick="importCSV()">Import CSV</button>
+      <button type="button" class="secondary" onclick="downloadTemplate()">Modèle CSV</button>
+      <button type="button" class="secondary" onclick="exportBackup()">Backup JSON</button>
+      <button type="button" class="secondary" onclick="importBackupTriggered()">Restaurer</button>
+      <button type="button" class="danger" onclick="clearQuotes()">Effacer cours</button>
+    </div>
+    <div id="importMessage" class="notice hidden"></div>
+  </div>
+</section>
+
+<div class="foot">Données différées BRVM — analyses indicatives — pas un conseil d’investissement.</div>
 </main>
+
+<nav class="bottom-nav" aria-label="Navigation principale">
+  <button type="button" data-tab="dashboard" class="active"><span class="ico">🏠</span>Accueil</button>
+  <button type="button" data-tab="companies"><span class="ico">📋</span>Marché</button>
+  <button type="button" data-tab="sheet"><span class="ico">📄</span>Fiche</button>
+  <button type="button" data-tab="watch"><span class="ico">★</span>Favoris</button>
+  <button type="button" data-tab="portfolio"><span class="ico">💼</span>Portef.</button>
+</nav>
+
+<script>
+(function(){
+  function activate(tab){
+    document.querySelectorAll('.nav button, .bottom-nav button').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab===tab);
+    });
+    document.querySelectorAll('.screen').forEach(function(s){
+      s.classList.toggle('active', s.id===tab);
+    });
+    if(tab==='data' && typeof renderDataQuality==='function') renderDataQuality();
+  }
+  window.__brvmActivateTab = activate;
+})();
+</script>
 <script>
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
-  caches.keys().then(ks=>ks.forEach(k=>caches.delete(k)));
+  navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+  caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); }).then(function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  });
 }
 </script>
-<script src="app.p1.js?v=8"></script>
-<script src="app.p2.js?v=8"></script>
+<script src="app.p1.js?v=9"></script>
+<script src="app.p2.js?v=9"></script>
 <script src="tech-charts.js?v=3"></script>
 <script src="tech-adaptive.js?v=2"></script>
-<script src="app-ux.js?v=3"></script>
+<script src="app-ux.js?v=4"></script>
+<script>
+(function(){
+  setTimeout(function(){
+    if(typeof window.__brvmActivateTab!=='function') return;
+    document.querySelectorAll('.nav button, .bottom-nav button').forEach(function(b){
+      var nb=b.cloneNode(true);
+      b.parentNode.replaceChild(nb,b);
+      nb.addEventListener('click', function(){ window.__brvmActivateTab(nb.dataset.tab); });
+    });
+  }, 100);
+})();
+</script>
 </body>
 </html>
