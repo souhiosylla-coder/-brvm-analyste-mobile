@@ -1,43 +1,43 @@
 {
   "source": "BloomAfrik API",
-  "updated_at_utc": "2026-10-16T08:32:41Z",
-  "retrieved_on": "2026-10-15",
+  "updated_at_utc": "2026-10-16T09:31:57Z",
+  "retrieved_on": "2026-10-16",
   "quote_count": 48,
   "quotes": [
     {
       "symbol": "ABJC",
       "price": 3100,
-      "variation_pct": -2.82
+      "variation_pct": 0.0
     },
     {
       "symbol": "BBGC",
       "price": 10495,
-      "variation_pct": 0.91
+      "variation_pct": 0.0
     },
     {
       "symbol": "BICB",
       "price": 8400,
-      "variation_pct": 0.24
+      "variation_pct": 0.0
     },
     {
       "symbol": "BICC",
       "price": 31090,
-      "variation_pct": -1.24
+      "variation_pct": 0.0
     },
     {
       "symbol": "BNBC",
       "price": 1775,
-      "variation_pct": -1.39
+      "variation_pct": 0.0
     },
     {
       "symbol": "BOAB",
       "price": 9205,
-      "variation_pct": -1.07
+      "variation_pct": 0.0
     },
     {
       "symbol": "BOABF",
       "price": 8010,
-      "variation_pct": -0.44
+      "variation_pct": 0.0
     },
     {
       "symbol": "BOAC",
@@ -47,82 +47,82 @@
     {
       "symbol": "BOAM",
       "price": 5700,
-      "variation_pct": -4.92
+      "variation_pct": 0.0
     },
     {
       "symbol": "BOAN",
       "price": 4675,
-      "variation_pct": -2.5
+      "variation_pct": 0.0
     },
     {
       "symbol": "BOAS",
       "price": 8145,
-      "variation_pct": 0.12
+      "variation_pct": 0.0
     },
     {
       "symbol": "CABC",
       "price": 3050,
-      "variation_pct": -0.33
+      "variation_pct": 0.0
     },
     {
       "symbol": "CBIBF",
       "price": 31000,
-      "variation_pct": 1.64
+      "variation_pct": 0.0
     },
     {
       "symbol": "CFAC",
       "price": 1350,
-      "variation_pct": -4.93
+      "variation_pct": 0.0
     },
     {
       "symbol": "CIEC",
       "price": 5950,
-      "variation_pct": -0.83
+      "variation_pct": 0.0
     },
     {
       "symbol": "ECOC",
       "price": 16000,
-      "variation_pct": 0.6
+      "variation_pct": 0.0
     },
     {
       "symbol": "ETIT",
       "price": 65,
-      "variation_pct": -1.52
+      "variation_pct": 0.0
     },
     {
       "symbol": "FTSC",
       "price": 1800,
-      "variation_pct": -2.7
+      "variation_pct": 0.0
     },
     {
       "symbol": "LNBB",
       "price": 4080,
-      "variation_pct": 0.74
+      "variation_pct": 0.0
     },
     {
       "symbol": "NEIC",
       "price": 2140,
-      "variation_pct": -0.7
+      "variation_pct": 0.0
     },
     {
       "symbol": "NSBC",
       "price": 20800,
-      "variation_pct": -0.48
+      "variation_pct": 0.0
     },
     {
       "symbol": "NTLC",
       "price": 15500,
-      "variation_pct": 1.11
+      "variation_pct": 0.0
     },
     {
       "symbol": "ONTBF",
       "price": 2900,
-      "variation_pct": -4.76
+      "variation_pct": 0.0
     },
     {
       "symbol": "ORAC",
       "price": 21500,
-      "variation_pct": 4.85
+      "variation_pct": 0.0
     },
     {
       "symbol": "ORGT",
@@ -132,32 +132,32 @@
     {
       "symbol": "PALC",
       "price": 7680,
-      "variation_pct": -0.26
+      "variation_pct": 0.0
     },
     {
       "symbol": "PRSC",
       "price": 4250,
-      "variation_pct": -2.19
+      "variation_pct": 0.0
     },
     {
       "symbol": "SAFC",
       "price": 3900,
-      "variation_pct": -4.18
+      "variation_pct": 0.0
     },
     {
       "symbol": "SCRC",
       "price": 2345,
-      "variation_pct": -3.7
+      "variation_pct": 0.0
     },
     {
       "symbol": "SDCC",
       "price": 12985,
-      "variation_pct": 3.88
+      "variation_pct": 0.0
     },
     {
       "symbol": "SDSC",
       "price": 3065,
-      "variation_pct": -1.13
+      "variation_pct": 0.0
     },
     {
       "symbol": "SEMC",
@@ -167,17 +167,17 @@
     {
       "symbol": "SGBC",
       "price": 38995,
-      "variation_pct": -0.01
+      "variation_pct": 0.0
     },
     {
       "symbol": "SHEC",
       "price": 2190,
-      "variation_pct": -0.45
+      "variation_pct": 0.0
     },
     {
       "symbol": "SIBC",
       "price": 8900,
-      "variation_pct": 1.14
+      "variation_pct": 0.0
     },
     {
       "symbol": "SICC",
@@ -187,12 +187,12 @@
     {
       "symbol": "SIVC",
       "price": 1790,
-      "variation_pct": -3.24
+      "variation_pct": 0.0
     },
     {
       "symbol": "SLBC",
       "price": 38490,
-      "variation_pct": 0.76
+      "variation_pct": 0.0
     },
     {
       "symbol": "SMBC",
@@ -202,37 +202,37 @@
     {
       "symbol": "SNTS",
       "price": 43900,
-      "variation_pct": -1.79
+      "variation_pct": 0.0
     },
     {
       "symbol": "SOGC",
       "price": 7700,
-      "variation_pct": -1.03
+      "variation_pct": 0.0
     },
     {
       "symbol": "SPHC",
       "price": 7800,
-      "variation_pct": 3.24
+      "variation_pct": 0.0
     },
     {
       "symbol": "STAC",
       "price": 1905,
-      "variation_pct": -4.75
+      "variation_pct": 0.0
     },
     {
       "symbol": "STBC",
       "price": 21200,
-      "variation_pct": 0.28
+      "variation_pct": 0.0
     },
     {
       "symbol": "TTLC",
       "price": 3000,
-      "variation_pct": -3.23
+      "variation_pct": 0.0
     },
     {
       "symbol": "TTLS",
       "price": 3700,
-      "variation_pct": -0.4
+      "variation_pct": 0.0
     },
     {
       "symbol": "UNLC",
@@ -242,7 +242,7 @@
     {
       "symbol": "UNXC",
       "price": 2180,
-      "variation_pct": 1.4
+      "variation_pct": 0.0
     }
   ]
 }

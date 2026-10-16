@@ -106,7 +106,7 @@
       "eps": 123.78,
       "dividend": 140.91,
       "book": 472.84,
-      "per_ref": 25.41,
+      "per_ref": 25.04,
       "yield_ref": 4.55,
       "market_cap_mds": 33.8,
       "revenueNew": 13298319000,
@@ -114,7 +114,7 @@
       "equity": 5159611000,
       "roe": 26.18,
       "pb": 6.56,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 50000000000
     },
@@ -129,21 +129,21 @@
       "equity": 105200633000,
       "roe": 25.85,
       "pb": 4.99,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "BICB": {
       "eps": 418.66,
       "dividend": 268.0,
       "book": 2331.04,
-      "per_ref": 13.39,
+      "per_ref": 20.06,
       "yield_ref": 3.19,
       "market_cap_mds": 485.2,
       "profitNew": 24182000000,
       "equity": 134640353000,
       "roe": 17.96,
       "pb": 3.6,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "BICC": {
@@ -157,7 +157,7 @@
       "equity": 120623517000,
       "roe": 30.28,
       "pb": 4.3,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 1126270000000
     },
@@ -165,7 +165,7 @@
       "eps": 3.37,
       "dividend": 0.0,
       "book": 2682.56,
-      "per_ref": 526.82,
+      "per_ref": 526.71,
       "yield_ref": 0.0,
       "market_cap_mds": 11.8,
       "revenueNew": 42454158000,
@@ -173,7 +173,7 @@
       "equity": 17769306000,
       "roe": 0.13,
       "pb": 0.66,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 1887953177000
     },
@@ -188,7 +188,7 @@
       "equity": 117495953000,
       "roe": 17.11,
       "pb": 3.18,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 964662725647000
     },
@@ -203,7 +203,7 @@
       "equity": 126469118000,
       "roe": 15.22,
       "pb": 2.79,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 114867468000
     },
@@ -218,7 +218,7 @@
       "equity": 127321512000,
       "roe": 27.91,
       "pb": 3.58,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "BOAM": {
@@ -232,7 +232,7 @@
       "equity": 49790875000,
       "roe": 22.26,
       "pb": 3.14,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 593455000000
     },
@@ -240,14 +240,14 @@
       "eps": 19.66,
       "dividend": 0.0,
       "book": 1733.67,
-      "per_ref": 237.59,
+      "per_ref": 237.79,
       "yield_ref": 0.0,
       "market_cap_mds": 97.2,
       "profitNew": 409000000,
       "equity": 36060300000,
       "roe": 1.13,
       "pb": 2.7,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 255686000
     },
@@ -262,7 +262,7 @@
       "equity": 96492633000,
       "roe": 22.7,
       "pb": 3.04,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 836158000000
     },
@@ -270,7 +270,7 @@
       "eps": 287.91,
       "dividend": 172.75,
       "book": 1517.8,
-      "per_ref": 12.54,
+      "per_ref": 10.59,
       "yield_ref": 5.66,
       "market_cap_mds": 18.1,
       "revenueNew": 21263067000,
@@ -278,7 +278,7 @@
       "equity": 8985375000,
       "roe": 18.97,
       "pb": 2.01,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 23609026000
     },
@@ -293,7 +293,7 @@
       "equity": 330655024000,
       "roe": 19.81,
       "pb": 3.0,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "CFAC": {
@@ -308,7 +308,7 @@
       "equity": 26397145000,
       "roe": 31.88,
       "pb": 9.28,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "CIEC": {
@@ -323,7 +323,7 @@
       "equity": 35928339000,
       "roe": 36.54,
       "pb": 9.27,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 2018446000000
     },
@@ -338,7 +338,7 @@
       "equity": 218597842000,
       "roe": 29.04,
       "pb": 4.03,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "ETIT": {
@@ -347,12 +347,12 @@
       "book": 88.53,
       "per_ref": 3.4,
       "yield_ref": 1.52,
-      "market_cap_mds": 1172.7,
+      "market_cap_mds": 1175.5,
       "profitNew": 345523000000,
       "equity": 1597240795000,
       "roe": 21.63,
       "pb": 0.73,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 17646019000
     },
@@ -368,7 +368,7 @@
       "equity": 15702656000,
       "roe": 2.97,
       "pb": 1.62,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "LNBB": {
@@ -383,7 +383,7 @@
       "equity": 21952379000,
       "roe": 21.05,
       "pb": 3.72,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 993695000
     },
@@ -399,7 +399,7 @@
       "equity": 5754702000,
       "roe": 35.39,
       "pb": 4.75,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "NSBC": {
@@ -413,7 +413,7 @@
       "equity": 233245406000,
       "roe": 17.45,
       "pb": 2.21,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 3073062000000
     },
@@ -429,7 +429,7 @@
       "equity": 29595570000,
       "roe": 62.26,
       "pb": 11.56,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 189958727990
     },
@@ -437,7 +437,7 @@
       "eps": 233.63,
       "dividend": 166.08,
       "book": 846.18,
-      "per_ref": 13.58,
+      "per_ref": 12.41,
       "yield_ref": 5.73,
       "market_cap_mds": 197.2,
       "revenueNew": 146176657000,
@@ -445,7 +445,7 @@
       "equity": 57540211000,
       "roe": 27.61,
       "pb": 3.43,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 324902379000
     },
@@ -461,7 +461,7 @@
       "equity": 707741110000,
       "roe": 23.71,
       "pb": 4.58,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 1846300000000
     },
@@ -476,7 +476,7 @@
       "equity": 113200214000,
       "roe": 19.12,
       "pb": 1.72,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 3901027000000
     },
@@ -492,7 +492,7 @@
       "equity": 142646912000,
       "roe": 10.87,
       "pb": 0.83,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 56477209000
     },
@@ -508,7 +508,7 @@
       "equity": 11528496000,
       "roe": 20.54,
       "pb": 3.77,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 47836082680000
     },
@@ -516,14 +516,14 @@
       "eps": 86.33,
       "dividend": 0.0,
       "book": 498.65,
-      "per_ref": 66.04,
+      "per_ref": 45.18,
       "yield_ref": 0.0,
       "market_cap_mds": 46.3,
       "profitNew": 701000000,
       "equity": 5918892000,
       "roe": 11.84,
       "pb": 7.82,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SCRC": {
@@ -537,7 +537,7 @@
       "equity": 13818773000,
       "roe": -44.37,
       "pb": 3.33,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 156426000
     },
@@ -545,7 +545,7 @@
       "eps": 518.08,
       "dividend": 525.0,
       "book": 2190.04,
-      "per_ref": 19.87,
+      "per_ref": 25.06,
       "yield_ref": 4.04,
       "market_cap_mds": 116.9,
       "revenueNew": 189429713000,
@@ -553,7 +553,7 @@
       "equity": 19710402000,
       "roe": 23.66,
       "pb": 5.93,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SDSC": {
@@ -568,7 +568,7 @@
       "equity": 73553576000,
       "roe": 1.07,
       "pb": 2.27,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SEMC": {
@@ -582,7 +582,7 @@
       "equity": 13093168000,
       "roe": 0.34,
       "pb": 2.88,
-      "source": "BloomAfrik API · exercice 2024 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2024 · séance 2026-10-16",
       "real_ca": true
     },
     "SGBC": {
@@ -596,7 +596,7 @@
       "equity": 495269464000,
       "roe": 20.46,
       "pb": 2.45,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SHEC": {
@@ -611,21 +611,21 @@
       "equity": 27156647000,
       "roe": 22.2,
       "pb": 5.08,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SIBC": {
       "eps": 556.23,
       "dividend": 425.0,
       "book": 2047.33,
-      "per_ref": 16.01,
+      "per_ref": 16.0,
       "yield_ref": 4.78,
       "market_cap_mds": 890.0,
       "profitNew": 55623000000,
       "equity": 204732550000,
       "roe": 27.17,
       "pb": 4.35,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SICC": {
@@ -638,14 +638,14 @@
       "equity": 2975193000,
       "roe": -4.32,
       "pb": 1.69,
-      "source": "BloomAfrik API · exercice 2024 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2024 · séance 2026-10-16",
       "real_ca": true
     },
     "SIVC": {
       "eps": 20.53,
       "dividend": 0.0,
       "book": 289.24,
-      "per_ref": 87.2,
+      "per_ref": 87.19,
       "yield_ref": 0.0,
       "market_cap_mds": 15.6,
       "revenueNew": 10074574000,
@@ -653,7 +653,7 @@
       "equity": 2526256000,
       "roe": 7.1,
       "pb": 6.19,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SLBC": {
@@ -668,7 +668,7 @@
       "equity": 195154372000,
       "roe": 23.46,
       "pb": 3.25,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 4316000
     },
@@ -684,7 +684,7 @@
       "equity": 42912715000,
       "roe": 30.47,
       "pb": 2.82,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 137090000000
     },
@@ -700,7 +700,7 @@
       "equity": 1399307883000,
       "roe": 29.56,
       "pb": 3.14,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "SOGC": {
@@ -715,7 +715,7 @@
       "equity": 68429337000,
       "roe": 18.26,
       "pb": 2.43,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 90288080000
     },
@@ -731,7 +731,7 @@
       "equity": 137944743000,
       "roe": 18.1,
       "pb": 1.45,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 87806000000
     },
@@ -746,7 +746,7 @@
       "equity": 356746000,
       "roe": -27.07,
       "pb": 71.78,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 5089000000
     },
@@ -762,7 +762,7 @@
       "equity": 45643694000,
       "roe": 79.89,
       "pb": 8.34,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 75184090000
     },
@@ -778,7 +778,7 @@
       "equity": 36205471000,
       "roe": 25.1,
       "pb": 5.22,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 188472000000
     },
@@ -786,7 +786,7 @@
       "eps": 188.67,
       "dividend": 188.67,
       "book": 635.97,
-      "per_ref": 17.78,
+      "per_ref": 19.61,
       "yield_ref": 5.1,
       "market_cap_mds": 120.5,
       "revenueNew": 455208888000,
@@ -794,21 +794,21 @@
       "equity": 20718451000,
       "roe": 29.67,
       "pb": 5.82,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     },
     "UNLC": {
       "eps": 69.73,
       "dividend": 0.0,
       "book": 2719.73,
-      "per_ref": 636.91,
+      "per_ref": 636.89,
       "market_cap_mds": 407.8,
       "revenueNew": 34682083000,
       "profitNew": 640335000,
       "equity": 24976345000,
       "roe": 2.56,
       "pb": 16.33,
-      "source": "BloomAfrik API · exercice 2023 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2023 · séance 2026-10-16",
       "real_ca": true,
       "total_liabilities": 23009560000
     },
@@ -823,7 +823,7 @@
       "equity": 24620738000,
       "roe": -2.53,
       "pb": 1.84,
-      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-15",
+      "source": "BloomAfrik API · exercice 2025 · séance 2026-10-16",
       "real_ca": true
     }
   }
